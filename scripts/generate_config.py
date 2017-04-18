@@ -6,7 +6,7 @@ __email__ = "<vangalamaheshh@gmail.com>"
 __date__ = "Apr, 18, 2017"
 
 """
-  Takes in --data <path/to/fastqs> and generates config.yaml
+  Takes in fastq_folder and generates config.yaml
 
   
 """
