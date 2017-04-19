@@ -13,8 +13,13 @@ __date__ = "Apr, 19, 2017"
 
 def getTargetInfo(config):
   targetFiles = []
-  targetFiles.extend(_getTrimOut(config))
+  targetFiles.extend([_getTrimOut(config),
+                    _getSpadesOut(config)])
   return targetFiles
 
 def _getTrimOut(config):
   return ["analysis/trimmomatic/trim_report.png"] 
+
+def _getSpadesOut(config):
+  return ["analysis/spades/" + sample + "/contigs.fasta" 
+    for sample in config["isolates"].keys()]
