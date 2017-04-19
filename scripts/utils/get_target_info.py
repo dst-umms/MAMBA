@@ -17,5 +17,4 @@ def getTargetInfo(config):
   return targetFiles
 
 def _getTrimOut(config):
-  return ["analysis/trimmomatic/" + sample + "/" + sample + ".trim.log" 
-    for sample in config["isolates"].keys()]
+  return ["analysis/trimmomatic/trim_report.png"] 

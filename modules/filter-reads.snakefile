@@ -30,3 +30,14 @@ rule run_trim_pe:
     "trimmomatic PE -threads {threads} {input} {output.leftPaired} {output.leftUnpaired} \
     {output.rightPaired} {output.rightUnpaired} \
     ILLUMINACLIP:{params.adapterFile}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINLEN:36 >&{output.trimLog}"
+
+rule trim_report:
+  input:
+    trimLogs = expand("analysis/trimmomatic/{sample}/{sample}.trim.log", sample = config["isolates"].keys())
+  output:
+    trimReport = "analysis/trimmomatic/trim_report.csv",
+    trimPlot = "analysis/trimmomatic/trim_report.png"
+  run:
+    trimLogList = " -l ".join(input.trimLogs)
+    shell("perl microbe-tracker/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")
+    shell("Rscript microbe-tracker/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")
