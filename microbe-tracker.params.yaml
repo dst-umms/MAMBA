@@ -1,0 +1,7 @@
+#prokka params
+kingdom:                    #possible values are [Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')]
+genus: Staphylococcus       #(default 'Genus')
+species: aureus             #(default 'species')
+strain:                     #(default 'strain')
+gram: pos                   #possible values are [neg|pos (default '')]
+

@@ -27,4 +27,5 @@ rule target:
     getTargetInfo(config)
 
 include: "modules/filter-reads.snakefile"
-include: "modules/spades.snakefile"    
+include: "modules/spades.snakefile"   
+include: "modules/prokka.snakefile" 

@@ -62,7 +62,14 @@ def getFastqInfo(absPath):
   return info
     
 
+def getPipelineParams():
+  pipelineParamsYaml = "microbe-tracker/microbe-tracker.params.yaml"
+  with open(pipelineParamsYaml, "r") as fh:
+    return orderedLoad(fh, yaml.SafeLoader)
+
 if __name__ == "__main__":
   args = parseArgs()
-  info = getFastqInfo(args.fastq_folder) 
+  info = getPipelineParams()
+  fastqInfo = getFastqInfo(args.fastq_folder) 
+  info["isolates"] = fastqInfo["isolates"]
   print(orderedDump(info, default_flow_style = False))

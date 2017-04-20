@@ -14,7 +14,8 @@ __date__ = "Apr, 19, 2017"
 def getTargetInfo(config):
   targetFiles = []
   targetFiles.extend([_getTrimOut(config),
-                    _getSpadesOut(config)])
+                    _getSpadesOut(config),
+                    _getProkkaOut(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -23,3 +24,7 @@ def _getTrimOut(config):
 def _getSpadesOut(config):
   return ["analysis/spades/" + sample + "/contigs.fasta" 
     for sample in config["isolates"].keys()]
+
+def _getProkkaOut(config):
+  return ["analysis/prokka/" + sample + "/" + sample + ".gbk"
+    for sample in config["isolates"].keys()][:1]
