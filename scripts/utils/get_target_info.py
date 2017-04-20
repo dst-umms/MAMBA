@@ -27,4 +27,4 @@ def _getSpadesOut(config):
 
 def _getProkkaOut(config):
   return ["analysis/prokka/" + sample + "/" + sample + ".gbk"
-    for sample in config["isolates"].keys()][:1]
+    for sample in config["isolates"].keys()]

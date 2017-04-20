@@ -3,5 +3,6 @@ kingdom:                    #possible values are [Archaea|Bacteria|Mitochondria|
 genus: Staphylococcus       #(default 'Genus')
 species: aureus             #(default 'species')
 strain:                     #(default 'strain')
-gram: pos                   #possible values are [neg|pos (default '')]
+#------- NOTE: Currently, gram option is not supported due to licensing issues with SignalP software ---------#
+gram:                       #possible values are [neg|pos (default '')]
 
