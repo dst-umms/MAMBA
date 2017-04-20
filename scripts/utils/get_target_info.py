@@ -15,7 +15,8 @@ def getTargetInfo(config):
   targetFiles = []
   targetFiles.extend([_getTrimOut(config),
                     _getSpadesOut(config),
-                    _getProkkaOut(config)])
+                    _getProkkaOut(config),
+                    _getRoaryOut(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -28,3 +29,6 @@ def _getSpadesOut(config):
 def _getProkkaOut(config):
   return ["analysis/prokka/" + sample + "/" + sample + ".gbk"
     for sample in config["isolates"].keys()]
+
+def _getRoaryOut(config):
+  return ["analysis/roary/roary.done"]

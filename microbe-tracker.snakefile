@@ -29,3 +29,4 @@ rule target:
 include: "modules/filter-reads.snakefile"
 include: "modules/spades.snakefile"   
 include: "modules/prokka.snakefile" 
+include: "modules/roary.snakefile"
