@@ -20,8 +20,8 @@ rule run_roary:
     "analysis/roary/roary.done"
   threads: 12
   shell:
-    "cd analysis/roary && roary -p {threads} -cd 95 -e -n -r {input.gff3Files} "
-    "&& touch {output}"
+    "roary -p {threads} -cd 95 -f analysis/roary_tmp -e -n -r {input.gff3Files} "
+    "&& mv analysis/roary_tmp/* analysis/roary/ && rmdir analysis/roary_tmp && touch {output}"
 
 rule get_core_genome:
   input:
