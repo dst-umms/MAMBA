@@ -20,7 +20,7 @@ rule run_roary:
     "analysis/roary/roary.done"
   threads: 12
   shell:
-    "roary -p {threads} -f analysis/roary -e -n -r {input.gff3Files} "
+    "cd analysis/roary && roary -p {threads} -cd 95 -e -n -r {input.gff3Files} "
     "&& touch {output}"
 
 rule get_core_genome:
@@ -28,15 +28,19 @@ rule get_core_genome:
     gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolates"].keys()),
     roaryToken = "analysis/roary/roary.done"
   output:
-    core = "analysis/roary/core_genome.fasta"
+    core = "analysis/roary/core_genome.tab"
+  params:
+    clusteredProteinsFile = "analysis/roary/clustered_proteins"
   shell:
-    "query_pan_genome -a intersection -o {output.core} {input.gff3Files}"
+    "query_pan_genome -g {params.clusteredProteinsFile} -a intersection -o {output.core} {input.gff3Files}"
 
 rule get_accessory_genome:
   input:
     gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolates"].keys()),
     roaryToken = "analysis/roary/roary.done"
   output:
-    accessory = "analysis/roary/accessory_genome.fasta"
+    accessory = "analysis/roary/accessory_genome.tab"
+  params:
+    clusteredProteinsFile = "analysis/roary/clustered_proteins"
   shell:
-    "query_pan_genome -a complement -o {output.accessory} {input.gff3Files}"
+    "query_pan_genome -g {params.clusteredProteinsFile} -a complement -o {output.accessory} {input.gff3Files}"

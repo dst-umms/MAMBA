@@ -16,7 +16,8 @@ def getTargetInfo(config):
   targetFiles.extend([_getTrimOut(config),
                     _getSpadesOut(config),
                     _getProkkaOut(config),
-                    _getRoaryOut(config)])
+                    _getRoaryOut(config),
+                    _getCoreAndAccGenomes(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -32,3 +33,6 @@ def _getProkkaOut(config):
 
 def _getRoaryOut(config):
   return ["analysis/roary/roary.done"]
+
+def _getCoreAndAccGenomes(config):
+  return ["analysis/roary/core_genome.tab", "analysis/roary/accessory_genome.tab"]
