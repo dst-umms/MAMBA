@@ -40,4 +40,4 @@ rule trim_report:
   run:
     trimLogList = " -l ".join(input.trimLogs)
     shell("perl microbe-tracker/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")
-    shell("Rscript microbe-tracker/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")
+    shell("{config[Rscript]} microbe-tracker/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")

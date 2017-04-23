@@ -31,11 +31,11 @@ sub get_matrix {
         my($total, $unique) = (undef, undef);
         while(my $line = <FH>) {
             chomp $line;
-            if($line =~ /raw\stotal\ssequences:\s(\d+)/) {
+            if($line =~ /1st\sfragments:\s(\d+)/) {
                 $total = $1;
             }
-            elsif($line =~ /reads\smapped:\s(\d+)/) {
-                $unique = $1;
+            elsif($line =~ /reads\sproperly\spaired:\s(\d+)/) {
+                $unique = int($1/2);
             }
             last if $total and $unique;
         }
@@ -48,7 +48,7 @@ sub get_matrix {
 
 sub print_info {
     my($matrix, $samples) = @_;
-    my $header = ",TotalReadCount,UniqueReadCount\n";
+    my $header = ",TotalReadPairs,MappedReadPairs\n";
     print STDOUT $header;
     foreach my $sample(@$samples) {
         print STDOUT join(",", ($sample, $$matrix{$sample}{'Total'},

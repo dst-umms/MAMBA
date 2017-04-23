@@ -20,7 +20,7 @@ x_melt <- melt(x)
 
 png( args[2], width = 8, height = 8, unit="in",res=300 )
 
-upper_limit <- max(x$TotalReadCount)
+upper_limit <- max(x$TotalReadPairs)
 limits <- seq( 0, upper_limit, length.out=10)
 
 cust_labels <- vector("character",length=length(limits))
@@ -34,7 +34,7 @@ if( nchar(upper_limit) < 7 ) {
 }
 
 
-colors <- c(TotalReadCount="Grey", UniqueReadCount="steelblue")
+colors <- c(TotalReadPairs="steelblue4", MappedReadPairs="steelblue1")
 
 ggplot(x_melt, aes(x=id, y=value, fill=variable)) + 
     geom_bar( stat = "identity", position="identity") + 

@@ -106,5 +106,5 @@ rule mapReportPlot:
   message:
     "Plotting alignment PNG"
   shell:
-    "Rscript microbe-tracker/scripts/"
+    "{config[Rscript]} microbe-tracker/scripts/"
     "sam_stats_matrix.R {input.csv} {output.png}" 
