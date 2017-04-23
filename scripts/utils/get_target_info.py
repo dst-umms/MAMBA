@@ -17,7 +17,9 @@ def getTargetInfo(config):
                     _getSpadesOut(config),
                     _getProkkaOut(config),
                     _getRoaryOut(config),
-                    _getCoreAndAccGenomes(config)])
+                    _getCoreAndAccGenomes(config),
+                    _getBWAout(config),
+                    _getMapStats(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -36,3 +38,10 @@ def _getRoaryOut(config):
 
 def _getCoreAndAccGenomes(config):
   return ["analysis/roary/core_genome.tab", "analysis/roary/accessory_genome.tab"]
+
+def _getBWAout(config):
+  return ["analysis/bwa/aln/{sample}/{sample}.sam".format(sample = sample)
+    for sample in config["isolates"].keys()]
+
+def _getMapStats(config):
+  return ["analysis/bwa/aln/align_report.png"]

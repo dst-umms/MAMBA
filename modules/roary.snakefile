@@ -44,3 +44,19 @@ rule get_accessory_genome:
     clusteredProteinsFile = "analysis/roary/clustered_proteins"
   shell:
     "query_pan_genome -g {params.clusteredProteinsFile} -a complement -o {output.accessory} {input.gff3Files}"
+
+rule get_core_genome_fasta:
+  input:
+    clusterFile = "analysis/roary/clustered_proteins",
+    refFastaFile = "analysis/roary/pan_genome_reference.fa"
+  output:
+    coreListFile = "analysis/roary/core_genome.list",
+    coreFastaFile = "analysis/roary/core_genome.fasta"
+  params:
+    isolateCount = len(config["isolates"].keys())
+  shell:
+    "bash microbe-tracker/scripts/core_genome.bash {input.clusterFile} {params.isolateCount} 1>{output.coreListFile} "
+    "&& ruby microbe-tracker/scripts/fetch_fasta_seqs_for_given_ids.rb \
+      --fasta_file {input.refFastaFile} \
+      --id_file {output.coreListFile} \
+      --reg_exp_to_fetch_id \".+?\s(.+)\" 1>{output.coreFastaFile}"
