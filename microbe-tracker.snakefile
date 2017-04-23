@@ -18,9 +18,11 @@ __date__ = "Apr, 19, 2017"
   7) Visualization of clusters
 """
 
+from scripts.utils.config_setup import updateConfig
 from scripts.utils.get_target_info import getTargetInfo
 
 configfile: "config.yaml"
+config = updateConfig(config)
 
 rule target:
   input:
