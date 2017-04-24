@@ -1,3 +1,3 @@
-MAMBA - Maximum Likelihood Tree Based Micrbial Analysis Pipeline
-================================================================
+MAMBA - MAximuM likelihood tree Based microbial Analysis pipeline
+=================================================================
 
