@@ -17,11 +17,13 @@ rule run_roary:
   input:
     gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolates"].keys())
   output:
-    "analysis/roary/roary.done"
+    "analysis/roary/roary.done",
+    "analysis/roary/clustered_proteins",
+    "analysis/roary/pan_genome_reference.fa"
   threads: 12
   shell:
     "roary -p {threads} -cd 95 -f analysis/roary_tmp -e -n -r {input.gff3Files} "
-    "&& mv analysis/roary_tmp/* analysis/roary/ && rmdir analysis/roary_tmp && touch {output}"
+    "&& mv analysis/roary_tmp/* analysis/roary/ && rmdir analysis/roary_tmp && touch {output[0]}"
 
 rule get_core_genome:
   input:
@@ -55,8 +57,8 @@ rule get_core_genome_fasta:
   params:
     isolateCount = len(config["isolates"].keys())
   shell:
-    "bash microbe-tracker/scripts/core_genome.bash {input.clusterFile} {params.isolateCount} 1>{output.coreListFile} "
-    "&& ruby microbe-tracker/scripts/fetch_fasta_seqs_for_given_ids.rb \
+    "bash MAMBA/scripts/core_genome.bash {input.clusterFile} {params.isolateCount} 1>{output.coreListFile} "
+    "&& ruby MAMBA/scripts/fetch_fasta_seqs_for_given_ids.rb \
       --fasta_file {input.refFastaFile} \
       --id_file {output.coreListFile} \
       --reg_exp_to_fetch_id \".+?\s(.+)\" 1>{output.coreFastaFile}"

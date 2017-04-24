@@ -63,7 +63,7 @@ def getFastqInfo(absPath):
     
 
 def getPipelineParams():
-  pipelineParamsYaml = "microbe-tracker/microbe-tracker.params.yaml"
+  pipelineParamsYaml = "MAMBA/MAMBA.params.yaml"
   with open(pipelineParamsYaml, "r") as fh:
     return orderedLoad(fh, yaml.SafeLoader)
 

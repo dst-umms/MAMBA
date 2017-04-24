@@ -43,12 +43,14 @@ rule realign_targets:
   input:
     refFasta = "analysis/roary/core_genome.fasta",
     refDict = "analysis/roary/core_genome.dict",
-    dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam"
+    dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam",
+    dedupBamIndex = "analysis/preprocess/{sample}/{sample}.dedup.bai"
   output:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
+  threads: 12
   shell:
     "gatk -T RealignerTargetCreator -R {input.refFasta} -I {input.dedupBam} "
-    "-o {output.targetFile} "
+    "-nt {threads} -o {output.targetFile} "
 
 rule realign_indels:
   input:

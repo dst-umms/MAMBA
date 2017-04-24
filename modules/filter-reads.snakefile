@@ -24,7 +24,7 @@ rule run_trim_pe:
     rightUnpaired = protected("analysis/trimmomatic/{sample}/{sample}.right.unpaired.fastq.gz"),
     trimLog = protected("analysis/trimmomatic/{sample}/{sample}.trim.log")
   params:
-    adapterFile = "microbe-tracker/static/adapters.fa"
+    adapterFile = "MAMBA/static/adapters.fa"
   threads: 4
   shell:
     "trimmomatic PE -threads {threads} {input} {output.leftPaired} {output.leftUnpaired} \
@@ -39,5 +39,5 @@ rule trim_report:
     trimPlot = "analysis/trimmomatic/trim_report.png"
   run:
     trimLogList = " -l ".join(input.trimLogs)
-    shell("perl microbe-tracker/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")
-    shell("{config[Rscript]} microbe-tracker/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")
+    shell("perl MAMBA/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")
+    shell("{config[Rscript]} MAMBA/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")

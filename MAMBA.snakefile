@@ -6,16 +6,18 @@ __email__ = "<vangalamaheshh@gmail.com>"
 __date__ = "Apr, 19, 2017"
 
 """
-  Microbe-Tracker project pipeline file
+  MAMBA - Maximum Likelihood Tree Based Microbial Analysis Pipeline
 
   Have workflow divided into several modules
   1) Filter FastQ reads based on quality score
-  2) Perform denovo assembly and annotation
-  3) Pan and core genome analyses
-  4) Alignment of reads to annotated core-genome
-  5) Variant calling based on alignment results
-  6) Max-likelihood phylogeny tree-build
-  7) Visualization of clusters
+  2) Perform denovo assembly using SPAdes
+  3) Perform annotation using Prokka
+  4) Pan and core genome analyses using Roary
+  5) Alignment of reads to annotated core-genome using BWA MEM
+  6) GATK Preprocess rules
+  7) Variant calling using HaplotypeCaller
+  8) Max-likelihood phylogeny tree-build
+  9) Visualization of clusters
 """
 
 from scripts.utils.config_setup import updateConfig

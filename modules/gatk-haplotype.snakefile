@@ -18,8 +18,9 @@ rule call_variants:
     realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
   output:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
+  threads: 12
   shell:
-    "gatk -T HaplotypeCaller -R {input.refFasta} "
+    "gatk -T HaplotypeCaller -R {input.refFasta} -nct {threads} "
     "-I {input.realignBam} -ploidy 1 -stand_call_conf 30 -o {output.rawVCF} "
 
 rule extract_snps:
@@ -28,9 +29,10 @@ rule extract_snps:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   output:
     snpFile = "analysis/variants/{sample}/{sample}.snps.vcf"
+  threads: 12
   shell:
     "gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
-    "-selectType SNP -o {output.snpFile} "
+    "-nt {threads} -selectType SNP -o {output.snpFile} "
 
 rule extract_indels:
   input:
@@ -38,9 +40,10 @@ rule extract_indels:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   output:
     indelFile = "analysis/variants/{sample}/{sample}.indels.vcf"
+  threads: 12
   shell:
     "gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
-    "-selectType INDEL -o {output.indelFile} "
+    "-nt {threads} -selectType INDEL -o {output.indelFile} "
 
 rule filter_snps:
   input:

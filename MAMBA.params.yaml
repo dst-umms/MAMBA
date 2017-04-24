@@ -6,3 +6,5 @@ strain:                     #(default 'strain')
 #------- NOTE: Currently, gram option is not supported due to licensing issues with SignalP software ---------#
 gram:                       #possible values are [neg|pos (default '')]
 
+#GATK Executable - Due to licensing issues, user has to provide the executable 'only if' gatk is not already in PATH
+gatk_exec:

@@ -95,7 +95,7 @@ rule mapReportMatrix:
     "Gather samtools stats into csv"
   run:
     argList = " -s " + " -s ".join(input.metricsList)
-    shell("perl microbe-tracker/scripts/"
+    shell("perl MAMBA/scripts/"
         + "/sam_stats_matrix.pl " + argList + " 1>{output.csv}") 
         
 rule mapReportPlot:
@@ -106,5 +106,5 @@ rule mapReportPlot:
   message:
     "Plotting alignment PNG"
   shell:
-    "{config[Rscript]} microbe-tracker/scripts/"
+    "{config[Rscript]} MAMBA/scripts/"
     "sam_stats_matrix.R {input.csv} {output.png}" 
