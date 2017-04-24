@@ -16,10 +16,12 @@ dependencies:
 - fasttree=2.1.9=1
 - filechunkio=1.6=py35_0
 - ftputil=3.2=py35_0
+- gatk=3.7=py35_0
 - graphviz=2.38.0=4
 - hmmer=3.1b2=2
 - infernal=1.1.2=0
 - java-jdk=8.0.92=1
+- jemalloc=4.5.0=0
 - libxml2=2.9.3=0
 - mafft=7.305=0
 - mcl=14.137=2
@@ -175,6 +177,7 @@ dependencies:
 - perl-type-tiny=1.000005=0
 - perl-unicode-map=0.112=0
 - perl-uri=1.71=0
+- perl-vcftools-vcf=0.953=3
 - perl-www-robotrules=6.02=0
 - perl-xml-dom=1.45=0
 - perl-xml-dom-xpath=0.14=0
@@ -200,6 +203,7 @@ dependencies:
 - prokka=1.12=1
 - pysftp=0.2.9=py35_0
 - roary=3.7.0=0
+- ruby=2.2.3=0
 - samtools=1.4=0
 - snakemake=3.11.2=py35_0
 - spades=3.10.1=py35_0
@@ -207,15 +211,18 @@ dependencies:
 - tidyp=1.04=0
 - trimmomatic=0.36=3
 - urllib3=1.12=py35_0
+- vcftools=0.1.14=4
 - fontconfig=2.12.1=1
 - freetype=2.6.3=1
 - libgd=2.2.3=2
 - perl=5.22.0.1=0
 - boost=1.61.0=py35_0
+- bzip2=1.0.6=3
 - cffi=1.9.1=py35_0
 - cryptography=1.7.1=py35_0
 - curl=7.52.1=0
 - docutils=0.13.1=py35_0
+- gmp=6.1.0=0
 - icu=54.1=0
 - idna=2.2=py35_0
 - jbig=2.1=0

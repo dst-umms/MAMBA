@@ -30,12 +30,12 @@ rule bwa_align:
   output:
     samFile = "analysis/bwa/aln/{sample}/{sample}.sam"
   params:
-    RGline = lambda wildcards: '@RG\tID:' + wildcards.sample + '\tPU:' + \
-              wildcards.sample + '\tSM:' + wildcards.sample + '\tPL:ILLUMINA' + \
-              '\tLB:' + wildcards.sample
+    RGline = lambda wildcards: '@RG\\tID:' + wildcards.sample + '\\tPU:' + \
+              wildcards.sample + '\\tSM:' + wildcards.sample + '\\tPL:ILLUMINA' + \
+              '\\tLB:' + wildcards.sample
   threads: 8
   shell:
-    "bwa mem -t {threads} -R \'{params.RGline}\' analysis/bwa/index/ref {input.fastqs} "
+    "bwa mem -t {threads} -R {params.RGline} analysis/bwa/index/ref {input.fastqs} "
     "1>{output.samFile} "
 
 rule samToBam:
