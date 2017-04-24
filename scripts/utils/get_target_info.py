@@ -19,7 +19,8 @@ def getTargetInfo(config):
                     _getRoaryOut(config),
                     _getCoreAndAccGenomes(config),
                     _getBWAout(config),
-                    _getMapStats(config)])
+                    _getMapStats(config),
+                    _getFilteredSNPs(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -45,3 +46,8 @@ def _getBWAout(config):
 
 def _getMapStats(config):
   return ["analysis/bwa/aln/align_report.png"]
+
+def _getFilteredSNPs(config):
+  return [["analysis/variants/{sample}/{sample}.indels.filtered.vcf".format(sample = sample),
+          "analysis/variants/{sample}/{sample}.snps.filtered.vcf".format(sample = sample)]
+            for sample in config["isolates"].keys()]
