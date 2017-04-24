@@ -15,7 +15,7 @@ __date__ = "Apr, 24, 2017"
 rule call_variants:
   input:
     refFasta = "analysis/roary/core_genome.fasta",
-    realignBam = "analysis/preprocess/{sample}/{sample}.realigned.bam"
+    realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
   output:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   shell:

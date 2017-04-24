@@ -42,6 +42,7 @@ rule sort_dedup_bam:
 rule realign_targets:
   input:
     refFasta = "analysis/roary/core_genome.fasta",
+    refDict = "analysis/roary/core_genome.dict",
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam"
   output:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
@@ -55,9 +56,9 @@ rule realign_indels:
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam",
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
   output:
-    realignedBam = "analysis/preprocess/{sample}/{sample}.realigned.bam"
+    realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
   shell:
     "gatk -T IndelRealigner -R {input.refFasta} -I {input.dedupBam} "
-    "-targetIntervals {input.targetFile} -o {input.realignedBam} "
+    "-targetIntervals {input.targetFile} -o {output.realignBam} "
 
 
