@@ -35,7 +35,7 @@ rule bwa_align:
               '\\tLB:' + wildcards.sample
   threads: 8
   shell:
-    "bwa mem -t {threads} -R {params.RGline} analysis/bwa/index/ref {input.fastqs} "
+    "bwa mem -t {threads} -R \'{params.RGline}\' analysis/bwa/index/ref {input.fastqs} "
     "1>{output.samFile} "
 
 rule samToBam:
