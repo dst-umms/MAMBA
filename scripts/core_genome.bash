@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+#set -euo pipefail
 
 clusterFile="$1"
 isolateCount="$2"
@@ -26,4 +26,3 @@ if [ -z "$gemFound" ]; then
   gem install bio
   echo "Done!"
 fi
-exit $?
