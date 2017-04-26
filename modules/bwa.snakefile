@@ -16,15 +16,16 @@ rule build_index:
   input:
     refFasta = "analysis/roary/core_genome.fasta"
   output:
-    refDone = "analysis/bwa/index/ref.sa"
+    refDone = "analysis/bwa/index/ref.done"
   params:
     prefix = "analysis/bwa/index/ref"
   shell:
     "bwa index -p {params.prefix} {input.refFasta} "
+    "&& touch {output.refDone} "
 
 rule bwa_align:
   input:
-    buildRef = "analysis/bwa/index/ref.sa",
+    buildRef = "analysis/bwa/index/ref.done",
     fastqs = lambda wildcards: config["isolates"][wildcards.sample]
   output:
     samFile = "analysis/bwa/aln/{sample}/{sample}.sam"
@@ -56,8 +57,9 @@ rule sortBam:
     bam_index = "analysis/bwa/aln/{sample}/{sample}.sorted.bam.bai"
   message:
     "Sorting and indexing bam"
+  threads: 4
   shell:
-    "samtools sort -f {input.unsortedBam} {output.sortedBam} "
+    "samtools sort --threads {threads} -o {output.sortedBam} {input.unsortedBam} "
     "&& samtools index {output.sortedBam}"
 
 rule samtoolsStats:
