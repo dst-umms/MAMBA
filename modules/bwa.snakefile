@@ -16,16 +16,15 @@ rule build_index:
   input:
     refFasta = "analysis/roary/core_genome.fasta"
   output:
-    refDone = "analysis/bwa/index/ref.done"
+    refDone = "analysis/bwa/index/ref.sa"
   params:
     prefix = "analysis/bwa/index/ref"
   shell:
     "bwa index -p {params.prefix} {input.refFasta} "
-    "&& touch {output.refDone}"
 
 rule bwa_align:
   input:
-    buildRef = "analysis/bwa/index/ref.done",
+    buildRef = "analysis/bwa/index/ref.sa",
     fastqs = lambda wildcards: config["isolates"][wildcards.sample]
   output:
     samFile = "analysis/bwa/aln/{sample}/{sample}.sam"
