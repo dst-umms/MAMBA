@@ -19,8 +19,10 @@ rule call_variants:
   output:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   threads: 12
+  resources: mem = 30000 #30 GB of memory or whatever is available
   shell:
-    "gatk -T HaplotypeCaller -R {input.refFasta} -nct {threads} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& gatk -T HaplotypeCaller -R {input.refFasta} -nct {threads} "
     "-I {input.realignBam} -ploidy 1 -stand_call_conf 30 -o {output.rawVCF} "
 
 rule extract_snps:
@@ -30,8 +32,10 @@ rule extract_snps:
   output:
     snpFile = "analysis/variants/{sample}/{sample}.snps.vcf"
   threads: 12
+  resources: mem = 30000 #30 GB of memory
   shell:
-    "gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
     "-nt {threads} -selectType SNP -o {output.snpFile} "
 
 rule extract_indels:
@@ -41,8 +45,10 @@ rule extract_indels:
   output:
     indelFile = "analysis/variants/{sample}/{sample}.indels.vcf"
   threads: 12
+  resources: mem = 30000 #30 GB of memory
   shell:
-    "gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
     "-nt {threads} -selectType INDEL -o {output.indelFile} "
 
 rule filter_snps:
