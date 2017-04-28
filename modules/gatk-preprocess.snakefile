@@ -16,8 +16,10 @@ rule prepare_ref_fasta:
     refFasta = "analysis/roary/core_genome.fasta"
   output:
     dictFile = "analysis/roary/core_genome.dict"
+  resources: mem = 5000 #5G
   shell:
     "samtools faidx {input.refFasta} "
+    "&& export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& picard CreateSequenceDictionary REFERENCE={input.refFasta} "
     "OUTPUT={output.dictFile} "
 
@@ -27,8 +29,10 @@ rule mark_dups:
   output:
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam",
     metricsFile = "analysis/preprocess/{sample}/{sample}.metrics.txt"
+  resources: mem = 5000 #5G
   shell:
-    "picard MarkDuplicates I={input.sortedBam} O={output.dedupBam} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& picard MarkDuplicates I={input.sortedBam} O={output.dedupBam} "
     "METRICS_FILE={output.metricsFile} "
 
 rule sort_dedup_bam:
@@ -36,8 +40,10 @@ rule sort_dedup_bam:
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam"
   output:
     dedupIndex = "analysis/preprocess/{sample}/{sample}.dedup.bai"
+  resources: mem = 5000 #5G
   shell:
-    "picard BuildBamIndex INPUT={input.dedupBam} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& picard BuildBamIndex INPUT={input.dedupBam} "
 
 rule realign_targets:
   input:
@@ -48,8 +54,10 @@ rule realign_targets:
   output:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
   threads: 12
+  resources: mem = 10000 #10G
   shell:
-    "gatk -T RealignerTargetCreator -R {input.refFasta} -I {input.dedupBam} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& gatk -T RealignerTargetCreator -R {input.refFasta} -I {input.dedupBam} "
     "-nt {threads} -o {output.targetFile} "
 
 rule realign_indels:
@@ -59,8 +67,10 @@ rule realign_indels:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
   output:
     realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
+  resources: mem = 10000 #10G
   shell:
-    "gatk -T IndelRealigner -R {input.refFasta} -I {input.dedupBam} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& gatk -T IndelRealigner -R {input.refFasta} -I {input.dedupBam} "
     "-targetIntervals {input.targetFile} -o {output.realignBam} "
 
 

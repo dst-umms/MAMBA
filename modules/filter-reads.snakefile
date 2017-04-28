@@ -26,8 +26,10 @@ rule run_trim_pe:
   params:
     adapterFile = "MAMBA/static/adapters.fa"
   threads: 4
+  resources: mem = 5000 #5G
   shell:
-    "trimmomatic PE -threads {threads} {input} {output.leftPaired} {output.leftUnpaired} \
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& trimmomatic PE -threads {threads} {input} {output.leftPaired} {output.leftUnpaired} \
     {output.rightPaired} {output.rightUnpaired} \
     ILLUMINACLIP:{params.adapterFile}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINLEN:36 >&{output.trimLog}"
 
@@ -37,6 +39,7 @@ rule trim_report:
   output:
     trimReport = "analysis/trimmomatic/trim_report.csv",
     trimPlot = "analysis/trimmomatic/trim_report.png"
+  resources: mem = 1000 #1G
   run:
     trimLogList = " -l ".join(input.trimLogs)
     shell("perl MAMBA/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")

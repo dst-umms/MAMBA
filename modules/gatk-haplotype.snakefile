@@ -56,6 +56,7 @@ rule filter_snps:
     snpFile = "analysis/variants/{sample}/{sample}.snps.vcf"
   output:
     filteredSNP = "analysis/variants/{sample}/{sample}.snps.filtered.vcf"
+  resources: mem = 5000 #5G
   shell:
     "vcffilter -f \"DP > 9\" -f \"QUAL > 20\"  "
     "{input.snpFile} 1>{output.filteredSNP} "
@@ -65,6 +66,7 @@ rule filter_indels:
     indelFile = "analysis/variants/{sample}/{sample}.indels.vcf"
   output:
     filteredIndel = "analysis/variants/{sample}/{sample}.indels.filtered.vcf"
+  resources: mem = 5000 #5G
   shell:
     "vcffilter -f \"DP > 9\" -f \"QUAL > 20\" "
     "{input.indelFile} 1>{output.filteredIndel} "

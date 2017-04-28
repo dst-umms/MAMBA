@@ -17,6 +17,7 @@ rule contig_assembly:
   output:
     protected("analysis/spades/{sample}/contigs.fasta")
   threads: 12
+  resources: mem = 10000 #10G
   params:
     outdir = lambda wildcards: "analysis/spades/" + wildcards.sample
   shell:

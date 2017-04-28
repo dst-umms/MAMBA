@@ -19,6 +19,7 @@ rule build_index:
     refDone = "analysis/bwa/index/ref.done"
   params:
     prefix = "analysis/bwa/index/ref"
+  resources: mem = 5000 #5G
   shell:
     "bwa index -p {params.prefix} {input.refFasta} "
     "&& touch {output.refDone} "
@@ -34,6 +35,7 @@ rule bwa_align:
               wildcards.sample + '\\tSM:' + wildcards.sample + '\\tPL:ILLUMINA' + \
               '\\tLB:' + wildcards.sample
   threads: 8
+  resources: mem = 10000 #10G
   shell:
     "bwa mem -t {threads} -R \'{params.RGline}\' analysis/bwa/index/ref {input.fastqs} "
     "1>{output.samFile} "
@@ -45,6 +47,7 @@ rule samToBam:
     "analysis/bwa/aln/{sample}/{sample}.bam"
   message:
     "Sam to bam coversion"
+  resources: mem = 5000 #5G
   shell:
     "samtools view -bS {input} 1>{output}"
 
@@ -58,6 +61,7 @@ rule sortBam:
   message:
     "Sorting and indexing bam"
   threads: 4
+  resources: mem = 10000 #10G
   shell:
     "samtools sort --threads {threads} -o {output.sortedBam} {input.unsortedBam} "
     "&& samtools index {output.sortedBam}"
@@ -69,6 +73,7 @@ rule samtoolsStats:
     samStats = "analysis/bwa/aln/{sample}/{sample}.samtools.stats.txt"
   message:
     "Running samtools stats on {wildcards.sample}"
+  resources: mem = 5000 #5G
   shell:
     "samtools stats {input.unsortedBam} | grep ^SN | "
     "gawk 'BEGIN {{ FS=\"\t\"; }} {{ print $2,$3; }}' 1>{output.samStats}"
@@ -82,8 +87,10 @@ rule picardStats:
                         "{sample}.picard.wgs_metrics.txt"
   message:
     "Running picard wgs stats on {wildcards.sample}"
+  resources: mem = 5000 #5G
   shell:
-    "picard CollectWgsMetrics I={input.sortedBam} O={output.picardStats} "
+    "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
+    "&& picard CollectWgsMetrics I={input.sortedBam} O={output.picardStats} "
     "R={input.refFasta}" 
 
 rule mapReportMatrix:
@@ -94,6 +101,7 @@ rule mapReportMatrix:
     csv = "analysis/bwa/aln/align_report.csv"
   message:
     "Gather samtools stats into csv"
+  resources: mem = 1000 #1G
   run:
     argList = " -s " + " -s ".join(input.metricsList)
     shell("perl MAMBA/scripts/"
@@ -106,6 +114,7 @@ rule mapReportPlot:
     png = "analysis/bwa/aln/align_report.png"
   message:
     "Plotting alignment PNG"
+  resources: mem = 1000 #1G
   shell:
     "{config[Rscript]} MAMBA/scripts/"
     "sam_stats_matrix.R {input.csv} {output.png}" 

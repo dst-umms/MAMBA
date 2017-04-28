@@ -27,6 +27,7 @@ rule contig_annotation:
     strain = config["strain"] or 'strain',
     gramCommand = "--gram " + config["gram"] if config["gram"] else ''
   threads: 8
+  resources: mem = 10000 #10G
   shell:
     "prokka --outdir analysis/prokka/{params.sampleName} --force "
     "--prefix {params.sampleName} --compliant --centre UMassMedSchool "
