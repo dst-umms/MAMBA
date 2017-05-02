@@ -49,7 +49,7 @@ rule run_grinder:
     outDir = lambda wildcards: "analysis/ref_genomes/insilico/" + wildcards.sample
   shell:
     "zcat {input.refFasta} | "
-    "perl config[grinder_path] -reference_file - "
+    "perl {config[grinder_path]} -reference_file - "
     "-base_name {params.prefix} "
     "-output_dir {params.outDir} "
     "config[grinder_args] "
