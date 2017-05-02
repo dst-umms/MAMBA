@@ -52,7 +52,7 @@ rule run_grinder:
     "perl {config[grinder_path]} -reference_file - "
     "-base_name {params.prefix} "
     "-output_dir {params.outDir} "
-    "config[grinder_args] "
+    "{config[grinder_args]} "
 
 rule de_interleave_fastq:
   input:
