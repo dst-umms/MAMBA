@@ -41,7 +41,7 @@ rule run_grinder:
   input:
     refFasta = "{config[ref_path]/{sample}.fna.gz"
   output:
-    fastQ = "analysis/ref_genomes/insilico/{sample}/{sample}-reads.fastq"
+    fastQ = protected("analysis/ref_genomes/insilico/{sample}/{sample}-reads.fastq")
   resources: mem = 10000 #10GB
   params:
     prefix = lambda wildcards: wildcards.sample,
@@ -57,8 +57,8 @@ rule de_interleave_fastq:
   input:
     fastq = "analysis/ref_genomes/insilico/{sample}/{sample}-reads.fastq"
   ouput:
-    leftmate = "analysis/ref_genomes/insilico/{sample}/{sample}_R1.fastq.gz",
-    rightmate = "analysis/ref_genomes/insilico/{sample}/{sample}_R2.fastq.gz"
+    leftmate = protected("analysis/ref_genomes/insilico/{sample}/{sample}_R1.fastq.gz"),
+    rightmate = protected("analysis/ref_genomes/insilico/{sample}/{sample}_R2.fastq.gz")
   resources: mem = 10000 #10GB
   run:
     leftFile = open(output.leftmate.replace(".gz", ""), 'w')
@@ -69,6 +69,4 @@ rule de_interleave_fastq:
     rightFile.close()
     shell("gzip " + leftFile)
     shell("gzip " + rightFile)
-
-
 
