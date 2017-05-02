@@ -14,6 +14,7 @@ __date__ = "May, 2, 2017"
 """
 
 import glob
+import os
 
 def prepareConfig(config):
   if "grinder_path" not in config:
@@ -26,11 +27,11 @@ def prepareConfig(config):
 
 def getSamples(absPath):
   fastaFiles = glob.glob(absPath + "/*fna.gz", recursive = False)
-  return {fastaFile.replace(".fna.gz", "") for fastaFile in fastaFiles}
+  return {os.path.basename(fastaFile.replace(".fna.gz", "")) for fastaFile in fastaFiles}
 
 
 config = prepareConfig(config)
-config["samples"] = list(getSamples(config))
+config["samples"] = list(getSamples(config["ref_path"]))
 
 rule target:
   input:
@@ -39,7 +40,7 @@ rule target:
 
 rule run_grinder:
   input:
-    refFasta = "{config[ref_path]/{sample}.fna.gz"
+    refFasta = config["ref_path"] + "/{sample}.fna.gz"
   output:
     fastQ = protected("analysis/ref_genomes/insilico/{sample}/{sample}-reads.fastq")
   resources: mem = 10000 #10GB
@@ -50,13 +51,13 @@ rule run_grinder:
     "zcat {input.refFasta} | "
     "perl config[grinder_path] -reference_file - "
     "-base_name {params.prefix} "
-    "-output_dir {params.outDir "
+    "-output_dir {params.outDir} "
     "config[grinder_args] "
 
 rule de_interleave_fastq:
   input:
     fastq = "analysis/ref_genomes/insilico/{sample}/{sample}-reads.fastq"
-  ouput:
+  output:
     leftmate = protected("analysis/ref_genomes/insilico/{sample}/{sample}_R1.fastq.gz"),
     rightmate = protected("analysis/ref_genomes/insilico/{sample}/{sample}_R2.fastq.gz")
   resources: mem = 10000 #10GB
