@@ -32,7 +32,7 @@ def getSamples(absPath):
 config = prepareConfig(config)
 config["samples"] = list(getSamples(config))
 
-rule all:
+rule target:
   input:
     expand("analysis/ref_genomes/insilico/{sample}/{sample}_R1.fastq.gz", sample = config["samples"]),
     expand("analysis/ref_genomes/insilico/{sample}/{sample}_R2.fastq.gz", sample = config["samples"])
@@ -53,7 +53,22 @@ rule run_grinder:
     "-output_dir {params.outDir "
     "config[grinder_args] "
 
-
+rule de_interleave_fastq:
+  input:
+    fastq = "analysis/ref_genomes/insilico/{sample}/{sample}-reads.fastq"
+  ouput:
+    leftmate = "analysis/ref_genomes/insilico/{sample}/{sample}_R1.fastq.gz",
+    rightmate = "analysis/ref_genomes/insilico/{sample}/{sample}_R2.fastq.gz"
+  resources: mem = 10000 #10GB
+  run:
+    leftFile = open(output.leftmate.replace(".gz", ""), 'w')
+    rightFile = open(output.rightmate.replace(".gz", ""), 'w')
+    [leftFile.write(line) if (i % 8 < 4) else rightFile.write(line) 
+        for i, line in enumerate(open(input.fastq, 'r'))]
+    leftFile.close()
+    rightFile.close()
+    shell("gzip " + leftFile)
+    shell("gzip " + rightFile)
 
 
 
