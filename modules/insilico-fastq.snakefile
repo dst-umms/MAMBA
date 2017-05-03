@@ -62,12 +62,14 @@ rule de_interleave_fastq:
     rightmate = protected("analysis/ref_genomes/insilico/{sample}/{sample}_R2.fastq.gz")
   resources: mem = 10000 #10GB
   run:
-    leftFile = open(output.leftmate.replace(".gz", ""), 'w')
-    rightFile = open(output.rightmate.replace(".gz", ""), 'w')
-    [leftFile.write(line) if (i % 8 < 4) else rightFile.write(line) 
+    leftFile = output.leftmate.replace(".gz", "")
+    rightFile = output.rightmate.replace(".gz", "")
+    lfh = open(leftFile, 'w')
+    rfh = open(rightFile, 'w')
+    [lfh.write(line) if (i % 8 < 4) else rfh.write(line) 
         for i, line in enumerate(open(input.fastq, 'r'))]
-    leftFile.close()
-    rightFile.close()
+    lfh.close()
+    rfh.close()
     shell("gzip " + leftFile)
     shell("gzip " + rightFile)
 
