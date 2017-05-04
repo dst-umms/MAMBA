@@ -20,7 +20,8 @@ def getTargetInfo(config):
                     _getCoreAndAccGenomes(config),
                     _getBWAout(config),
                     _getMapStats(config),
-                    _getFilteredSNPs(config)])
+                    _getFilteredSNPs(config),
+                    _getRaxml(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -51,3 +52,6 @@ def _getFilteredSNPs(config):
   return [["analysis/variants/{sample}/{sample}.indels.filtered.vcf".format(sample = sample),
           "analysis/variants/{sample}/{sample}.snps.filtered.vcf".format(sample = sample)]
             for sample in config["isolates"].keys()]
+
+def _getRaxml(config):
+  return ["analysis/raxml/RAxML_bestTree.snps"]
