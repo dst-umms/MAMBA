@@ -1,0 +1,22 @@
+title	Human Microbiome Project species tree
+title_font_size	33
+total_plotted_degrees	340
+start_rotation	270
+
+branch_bracket_depth	0.8
+branch_thickness	2.5
+branch_bracket_width	0.2
+
+class_legend_font_size	24
+
+annotation_legend_font_size	24	
+annotation_background_separation	-0.03
+annotation_background_offset	0.0
+annotation_background_width	0.07
+annotation_background_alpha	0.1
+
+clade_marker_size	10
+clade_marker_edge_width	0.8
+
+UMWA1017	clade_marker_color	#4682B4
+UMWA1017	clade_marker_size	60
