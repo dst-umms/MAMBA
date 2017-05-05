@@ -11,6 +11,9 @@ __date__ = "Apr, 19, 2017"
 
 """
 
+def getFastq(wildcards):
+  return config["isolates"][wildcards.sample]
+
 rule contig_assembly:
   input:
     getFastq
