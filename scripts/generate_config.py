@@ -50,7 +50,7 @@ def getFastqInfo(absPath):
   leftmates = glob.glob(absPath + "/*_R1*fast*", recursive = False)
   info = dict()
   info["isolates"] = OrderedDict()
-  reObj = re.compile("(\w+?)_")
+  reObj = re.compile("(\w+?)_R1.+fast*")
   for leftmate in leftmates:
     sample = reObj.search(os.path.basename(leftmate)).group(1)
     rightmate = leftmate.replace("_R1", "_R2")
