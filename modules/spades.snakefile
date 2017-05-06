@@ -20,9 +20,11 @@ rule contig_assembly:
   output:
     protected("analysis/spades/{sample}/contigs.fasta")
   threads: 12
-  resources: mem = 10000 #10G
+  resources: mem = 20000 #20G
   params:
     outdir = lambda wildcards: "analysis/spades/" + wildcards.sample
-  shell:
-    "spades.py -1 {input[0]} -2 {input[1]} -t {threads} -m 10 -o {params.outdir}"
+  run:
+    mem = resources["mem"]
+    mem = int(mem / 1000) 
+    shell("spades.py -1 {input[0]} -2 {input[1]} -t {threads} -m {mem} -o {params.outdir}")
     
