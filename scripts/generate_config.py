@@ -16,6 +16,7 @@ import os
 import yaml
 import glob
 import re
+import sys
 from collections import OrderedDict
 
 def parseArgs():
@@ -67,9 +68,19 @@ def getPipelineParams():
   with open(pipelineParamsYaml, "r") as fh:
     return orderedLoad(fh, yaml.SafeLoader)
 
+
+def printMeta(info):
+  header = ["SampleName", "Group"]
+  sys.stderr.write(",".join(header) + "\n")
+  for sample in info["isolates"].keys():
+    sys.stderr.write(",".join([sample, '']) + "\n")
+  return None
+
+
 if __name__ == "__main__":
   args = parseArgs()
   info = getPipelineParams()
   fastqInfo = getFastqInfo(args.fastq_folder) 
   info["isolates"] = fastqInfo["isolates"]
   print(orderedDump(info, default_flow_style = False))
+  printMeta(info)
