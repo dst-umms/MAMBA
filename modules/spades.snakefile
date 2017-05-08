@@ -12,7 +12,8 @@ __date__ = "Apr, 19, 2017"
 """
 
 def getFastq(wildcards):
-  return config["isolates"][wildcards.sample]
+  return ["analysis/trimmomatic/{sample}/{sample}.left.paired.fastq.gz".format(sample = wildcards.sample),
+          "analysis/trimmomatic/{sample}/{sample}.right.paired.fastq.gz".format(sample = wildcards.sample)]
 
 rule contig_assembly:
   input:
