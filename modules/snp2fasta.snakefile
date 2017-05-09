@@ -22,7 +22,7 @@ rule vcf_to_fasta:
   resources: mem = 10000 #10G
   shell:
     "source activate MAMBA_PY2 "
-    "&& for file in {input}; do vk phylo fasta $file done 1>{output.fastaFile} "
+    "&& for file in {input}; do vk phylo fasta $file; done 1>{output.fastaFile} "
 
 rule multi_fasta_align:
   input:
