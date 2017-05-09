@@ -32,4 +32,4 @@ rule multi_fasta_align:
   resources: mem = 30000 #30G
   shell:
     "source activate MAMBA_PY2 "
-    "&& muscle -in {input} -out {output} " 
+    "&& muscle -in {input} -out {output} -maxiters 1 -diags" 
