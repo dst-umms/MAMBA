@@ -1,4 +1,4 @@
-title	Human Microbiome Project species tree
+title	MAMBA: MAximuM-likelihood-tree Based microbial Analysis
 title_font_size	33
 total_plotted_degrees	340
 start_rotation	270
@@ -18,5 +18,4 @@ annotation_background_alpha	0.1
 clade_marker_size	10
 clade_marker_edge_width	0.8
 
-UMWA1017	clade_marker_color	#4682B4
-UMWA1017	clade_marker_size	60
+

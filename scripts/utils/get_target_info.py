@@ -21,7 +21,8 @@ def getTargetInfo(config):
                     _getBWAout(config),
                     _getMapStats(config),
                     _getFilteredSNPs(config),
-                    _getRaxml(config)])
+                    _getRaxml(config),
+                    _getGraphlanPlot(config)])
   return targetFiles
 
 def _getTrimOut(config):
@@ -55,3 +56,6 @@ def _getFilteredSNPs(config):
 
 def _getRaxml(config):
   return ["analysis/raxml/RAxML_bestTree.snps"]
+
+def _getGraphlanPlot(config):
+  return ["analysis/graphlan/MAMBA.png"]

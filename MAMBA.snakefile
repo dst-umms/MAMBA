@@ -18,7 +18,7 @@ __date__ = "Apr, 19, 2017"
   7)  Variant calling using HaplotypeCaller
   8)  Generate SNP to Mulit Align Fasta using VCF kit and MUSCLE
   9)  Max-likelihood phylogeny tree-build using RAxML
-  10) Visualization of clusters
+  10) Visualization of clusters using Graphlan and SNPRelate
 """
 
 from scripts.utils.config_setup import updateConfig
@@ -40,3 +40,4 @@ include: "modules/gatk-preprocess.snakefile"
 include: "modules/gatk-haplotype.snakefile"
 include: "modules/snp2fasta.snakefile"
 include: "modules/raxml.snakefile"
+include: "modules/graphlan.snakefile"
