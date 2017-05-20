@@ -3,6 +3,7 @@ title_font_size	33
 total_plotted_degrees	340
 start_rotation	270
 
+ignore_branch_len 1
 branch_bracket_depth	0.8
 branch_thickness	2.5
 branch_bracket_width	0.2
@@ -17,5 +18,4 @@ annotation_background_alpha	0.1
 
 clade_marker_size	10
 clade_marker_edge_width	0.8
-
-
+clade_separation  0.1

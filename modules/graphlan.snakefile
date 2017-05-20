@@ -53,9 +53,9 @@ rule generate_tree_plot:
     "analysis/graphlan/MAMBA_with_annot.xml"
   output:
     "analysis/graphlan/MAMBA.png"
-  resources: mem = 2000 #2G
+  resources: mem = 5000 #5G
   shell:
     "source activate MAMBA_PY2 "
-    "&& graphlan.py --format png {input} {output} "
+    "&& graphlan.py --format png --dpi 300 --size 60 --pad 0.0 {input} {output} "
     
 
