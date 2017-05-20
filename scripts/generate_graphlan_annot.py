@@ -98,6 +98,20 @@ def printMeta(metaInfo, colorInfo, ref, out):
     ofh.write(sampleName + "\t" + "clade_marker_color" + "\t" + color + "\n")
     ofh.write(sampleName + "\t" + "clade_marker_size" + "\t" + str(20) + "\n")
 
+  #external rings to the tree
+  for ringLevel in range(0, len(colorInfo)):
+    for sampleName in metaInfo.index:
+      if not pd.notnull(metaInfo[metaInfo.columns[ringLevel]][sampleName]):
+        continue
+      color = colorInfo[ringLevel][metaInfo[metaInfo.columns[ringLevel]][sampleName]]
+      ofh.write(sampleName + "\t" + "ring_color" + "\t" + str(ringLevel + 1) + "\t"
+                  + color + "\n")
+     
+  #gloabl ring options for each level
+  for ringLevel in range(0, len(colorInfo)):
+    ofh.write("ring_label" + "\t" + str(ringLevel + 1) + "\t" + metaInfo.columns[ringLevel] + "\n")
+    ofh.write("ring_separator_color" + "\t" + str(ringLevel + 1) + "\t" + "black" + "\n")
+  
   ofh.close()
 
 
@@ -109,4 +123,4 @@ if __name__ == "__main__":
   colorInfo = getColorInfo(metaInfo)  
   printMeta(metaInfo, colorInfo, annotRef, annotOut)
 
-
+  
