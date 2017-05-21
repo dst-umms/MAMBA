@@ -29,7 +29,7 @@ rule mark_dups:
   output:
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam",
     metricsFile = "analysis/preprocess/{sample}/{sample}.metrics.txt"
-  resources: mem = 5000 #5G
+  resources: mem = 10000 #10G
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& picard MarkDuplicates I={input.sortedBam} O={output.dedupBam} "
