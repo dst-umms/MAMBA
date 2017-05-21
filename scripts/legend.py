@@ -16,7 +16,7 @@ __date__ = "May, 21, 2017"
 
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as pltb
+import matplotlib.pyplot as plt
 from cycler import cycler
 
 def plotLegend(colors, names, pngFile):
