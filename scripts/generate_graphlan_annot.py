@@ -12,6 +12,8 @@ __date__ = "May, 10, 2017"
 
 import sys
 import pandas as pd
+import legend
+from collections import OrderedDict
 
 COLOR_CODES = [
         "#92896B", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",
@@ -75,7 +77,7 @@ def getColorInfo(df):
   info = list()
   counter = 0
   for index in range(0, len(df.columns)):
-    d = dict()
+    d = OrderedDict()
     for uniq_attr in pd.Series.unique(df[df.columns[index]]):
       if not uniq_attr:
         continue
@@ -83,6 +85,14 @@ def getColorInfo(df):
       counter += 1
     info.append(d)
   return info
+
+
+def getColorInfoTuple(info):
+  names, colors = [], []
+  for index in range(0, len(info)):
+    names.extend(info[index].keys())
+    colors.extend(info[index].values())
+  return (names, colors)
 
 
 def printMeta(metaInfo, colorInfo, ref, out):
@@ -119,8 +129,10 @@ if __name__ == "__main__":
   metaFile = sys.argv[1]
   annotRef = sys.argv[2]
   annotOut = sys.argv[3]
+  legendFile = sys.argv[4]
   metaInfo = getMeta(metaFile)
   colorInfo = getColorInfo(metaInfo)  
   printMeta(metaInfo, colorInfo, annotRef, annotOut)
-
+  (names, colors) = getColorInfoTuple(colorInfo)
+  legend.legendPlot(colors, names, legendFile)
   

@@ -30,11 +30,12 @@ rule generate_tree_annotation:
     meta = "meta.csv",
     annotRef = "MAMBA/static/annot.txt"
   output:
-    annotFinal = "analysis/graphlan/MAMBA_annot.txt"
+    annotFinal = "analysis/graphlan/MAMBA_annot.txt",
+    legendPlot = "analysis/graphlan/MAMBA.legend.png"
   resources: mem = 2000 #2G
   shell:
     "python MAMBA/scripts/generate_graphlan_annot.py "
-    "{input.meta} {input.annotRef} {output.annotFinal} "
+    "{input.meta} {input.annotRef} {output.annotFinal} {output.legendPlot}"
 
 rule add_annot_to_phyloXML:
   input:
