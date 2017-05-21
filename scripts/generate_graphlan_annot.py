@@ -134,5 +134,5 @@ if __name__ == "__main__":
   colorInfo = getColorInfo(metaInfo)  
   printMeta(metaInfo, colorInfo, annotRef, annotOut)
   (names, colors) = getColorInfoTuple(colorInfo)
-  legend.legendPlot(colors, names, legendFile)
+  legend.plotLegend(colors, names, legendFile)
   
