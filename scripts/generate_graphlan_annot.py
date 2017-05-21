@@ -79,7 +79,7 @@ def getColorInfo(df):
   for index in range(0, len(df.columns)):
     d = OrderedDict()
     for uniq_attr in pd.Series.unique(df[df.columns[index]]):
-      if not uniq_attr:
+      if pd.isnull(uniq_attr):
         continue
       d[uniq_attr] = COLOR_CODES[counter]
       counter += 1
