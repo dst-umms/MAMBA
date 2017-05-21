@@ -58,5 +58,5 @@ rule generate_tree_plot:
   resources: mem = 5000 #5G
   shell:
     "source activate MAMBA_PY2 "
-    "&& graphlan.py --format png --dpi 300 {input} {output} "
+    "&& graphlan.py --format png --dpi 800 {input} {output} "
 
