@@ -34,7 +34,8 @@ rule generate_tree_annotation:
     legendPlot = "analysis/graphlan/MAMBA.legend.png"
   resources: mem = 2000 #2G
   shell:
-    "python MAMBA/scripts/generate_graphlan_annot.py "
+    "source activate MAMBA_PY2 "
+    "&& python MAMBA/scripts/generate_graphlan_annot.py "
     "{input.meta} {input.annotRef} {output.annotFinal} {output.legendPlot}"
 
 rule add_annot_to_phyloXML:
