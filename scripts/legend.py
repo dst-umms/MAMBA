@@ -21,7 +21,7 @@ from cycler import cycler
 
 def plotLegend(colors, names, pngFile):
   fig = plt.figure()
-  figlegend = plt.figure(figsize = (3,2))
+  figlegend = plt.figure(figsize = (8, 8), dpi = 800, tight_layout = True)
   ax = fig.add_subplot(111)
   ax.set_prop_cycle(cycler('color', colors))
   lines = ax.plot(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
@@ -40,8 +40,9 @@ def plotLegend(colors, names, pngFile):
                   196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 
                   211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 
                   226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 
-                  241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254) 
-  figlegend.legend(lines, tuple(names), 'center')
+                  241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
+                  linewidth = 7.0) 
+  figlegend.legend(lines, tuple(names), 'center', ncol = 5, shadow = True, title = "MAMBA Tree Legend", fancybox = True)
   figlegend.savefig(pngFile)
 
 
