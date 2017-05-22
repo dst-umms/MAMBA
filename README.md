@@ -1,4 +1,4 @@
 # MAMBA 
-## MAximuM-likelihood-tree Based microbial Analysis pipeline
+## MAximuM-likelihood-Method Based microbial Analysis pipeline
  
 
