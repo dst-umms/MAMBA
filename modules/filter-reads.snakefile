@@ -14,7 +14,7 @@ __date__ = "Apr, 19, 2017"
 def getFastq(wildcards):
   return config["isolates"][wildcards.sample]
 
-rule run_trim_pe:
+rule trimmomatic_PE:
   input:
     getFastq
   output:
@@ -25,21 +25,23 @@ rule run_trim_pe:
     trimLog = protected("analysis/trimmomatic/{sample}/{sample}.trim.log")
   params:
     adapterFile = "MAMBA/static/adapters.fa"
-  threads: 4
-  resources: mem = 5000 #5G
+  threads: config["max_cores"]
+  resources: mem = config["med_mem"]
+  message: "INFO: Processing Trimmomatic on sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& trimmomatic PE -threads {threads} {input} {output.leftPaired} {output.leftUnpaired} \
     {output.rightPaired} {output.rightUnpaired} \
     ILLUMINACLIP:{params.adapterFile}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINLEN:36 >&{output.trimLog}"
 
-rule trim_report:
+rule filtered_reads_QC:
   input:
     trimLogs = expand("analysis/trimmomatic/{sample}/{sample}.trim.log", sample = config["isolates"].keys())
   output:
     trimReport = "analysis/trimmomatic/trim_report.csv",
     trimPlot = "analysis/trimmomatic/trim_report.png"
-  resources: mem = 1000 #1G
+  resources: mem = config["min_mem"]
+  message: "INFO: Generating aggregate report with filtered read counts."
   run:
     trimLogList = " -l ".join(input.trimLogs)
     shell("perl MAMBA/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")

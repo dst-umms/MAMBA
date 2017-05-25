@@ -15,15 +15,16 @@ def getFastq(wildcards):
   return ["analysis/trimmomatic/{sample}/{sample}.left.paired.fastq.gz".format(sample = wildcards.sample),
           "analysis/trimmomatic/{sample}/{sample}.right.paired.fastq.gz".format(sample = wildcards.sample)]
 
-rule contig_assembly:
+rule spades_denovo_assembly:
   input:
     getFastq
   output:
     protected("analysis/spades/{sample}/contigs.fasta")
-  threads: 12
-  resources: mem = 20000 #20G
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
   params:
     outdir = lambda wildcards: "analysis/spades/" + wildcards.sample
+  message: "INFO: Processing denovo assembly step for sample: " + lambda wildcards : wildcards.sample + "."
   run:
     mem = resources["mem"]
     mem = int(mem / 1000) 

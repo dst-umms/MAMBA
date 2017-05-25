@@ -1,5 +1,5 @@
 # MAMBA 
-## MAximuM-likelihood-Method Based microbial Analysis pipeline
+## MAximuM-likelihood-Method Based microbial Analysis
  
 Requirements:
 

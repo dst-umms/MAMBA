@@ -16,7 +16,8 @@ rule prepare_ref_fasta:
     refFasta = "analysis/roary/core_genome.fasta"
   output:
     dictFile = "analysis/roary/core_genome.dict"
-  resources: mem = 5000 #5G
+  resources: mem = config["med_mem"]
+  message: "INFO: Creating dict file for core genome."
   shell:
     "samtools faidx {input.refFasta} "
     "&& export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -29,7 +30,8 @@ rule mark_dups:
   output:
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam",
     metricsFile = "analysis/preprocess/{sample}/{sample}.metrics.txt"
-  resources: mem = 10000 #10G
+  resources: mem = config["med_mem"]
+  message: "INFO: Run MarkDuplicates for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& picard MarkDuplicates I={input.sortedBam} O={output.dedupBam} "
@@ -40,7 +42,8 @@ rule sort_dedup_bam:
     dedupBam = "analysis/preprocess/{sample}/{sample}.dedup.bam"
   output:
     dedupIndex = "analysis/preprocess/{sample}/{sample}.dedup.bai"
-  resources: mem = 5000 #5G
+  resources: mem = config["med_mem"]
+  message: "INFO: Sorting deduped bam for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& picard BuildBamIndex INPUT={input.dedupBam} "
@@ -53,8 +56,9 @@ rule realign_targets:
     dedupBamIndex = "analysis/preprocess/{sample}/{sample}.dedup.bai"
   output:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
-  threads: 12
-  resources: mem = 10000 #10G
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
+  message: "INFO: Realigning targets for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& gatk -T RealignerTargetCreator -R {input.refFasta} -I {input.dedupBam} "
@@ -67,7 +71,8 @@ rule realign_indels:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
   output:
     realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
-  resources: mem = 10000 #10G
+  resources: mem = config["max_mem"]
+  message: "INFO: Realigning indels for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& gatk -T IndelRealigner -R {input.refFasta} -I {input.dedupBam} "

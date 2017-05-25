@@ -1,4 +1,4 @@
-#prokka params
+#------      prokka params     ----------#
 kingdom:                    #possible values are [Archaea|Bacteria|Mitochondria|Viruses (default 'Bacteria')]
 genus: Staphylococcus       #(default 'Genus')
 species: aureus             #(default 'species')
@@ -6,5 +6,18 @@ strain:                     #(default 'strain')
 #------- NOTE: Currently, gram option is not supported due to licensing issues with SignalP software ---------#
 gram:                       #possible values are [neg|pos (default '')]
 
+
+#------      GATK params       -----------#
 #GATK Executable - Due to licensing issues, user has to provide the executable 'only if' gatk is not already in PATH
 gatk_exec:
+
+
+
+#------       Memory params in MegaBytes (MB)  -----------#
+min_mem: 5000    #5G
+med_mem: 15000   #15G
+max_mem: 30000   #30G
+
+
+#------       Parallelization    ----------#
+max_cores: 12    #min_cores is by default 1

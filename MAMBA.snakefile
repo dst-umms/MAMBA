@@ -6,16 +6,16 @@ __email__ = "<vangalamaheshh@gmail.com>"
 __date__ = "Apr, 19, 2017"
 
 """
-  MAMBA - Maximum Likelihood Tree Based Microbial Analysis Pipeline
+  MAMBA - MAximum-likelihood-Method Based microbial Analysis
 
   Have workflow divided into several modules
-  1)  Filter FastQ reads based on quality score
+  1)  Filter FastQ reads based on quality score using Trimmomatic
   2)  Perform denovo assembly using SPAdes
   3)  Perform annotation using Prokka
   4)  Pan and core genome analyses using Roary
   5)  Alignment of reads to annotated core-genome using BWA MEM
   6)  GATK Preprocess rules
-  7)  Variant calling using HaplotypeCaller
+  7)  Variant calling using GATK HaplotypeCaller
   8)  Generate SNP to Mulit Align Fasta using VCF kit and MUSCLE
   9)  Max-likelihood phylogeny tree-build using RAxML
   10) Visualization of clusters using Graphlan and SNPRelate

@@ -12,7 +12,7 @@ __date__ = "Apr, 20, 2017"
   gff3 annotation files.
 """
 
-rule contig_annotation:
+rule prokka_contig_annotation:
   input:
     contigFastaFile = lambda wildcards: "analysis/spades/" + wildcards.sample + \
         "/contigs.fasta"
@@ -26,8 +26,9 @@ rule contig_annotation:
     species = config["species"] or 'species',
     strain = config["strain"] or 'strain',
     gramCommand = "--gram " + config["gram"] if config["gram"] else ''
-  threads: 8
-  resources: mem = 10000 #10G
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
+  message: "INFO: Processing prokka on sample: " + lambda wildcards : wildcards.sample + "."
   shell:
     "prokka --outdir analysis/prokka/{params.sampleName} --force "
     "--prefix {params.sampleName} --compliant --centre UMassMedSchool "

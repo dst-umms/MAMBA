@@ -19,7 +19,8 @@ rule build_index:
     refDone = "analysis/bwa/index/ref.done"
   params:
     prefix = "analysis/bwa/index/ref"
-  resources: mem = 5000 #5G
+  resources: mem = config["med_mem"]
+  message: "INFO: Building BWA index with core genome."
   shell:
     "bwa index -p {params.prefix} {input.refFasta} "
     "&& touch {output.refDone} "
@@ -34,51 +35,52 @@ rule bwa_align:
     RGline = lambda wildcards: '@RG\\tID:' + wildcards.sample + '\\tPU:' + \
               wildcards.sample + '\\tSM:' + wildcards.sample + '\\tPL:ILLUMINA' + \
               '\\tLB:' + wildcards.sample
-  threads: 8
-  resources: mem = 10000 #10G
+  threads: config["max_cores"]
+  resources: mem = config["med_mem"]
+  message: "INFO: Processing bwa alignment for sample: " + lambda wildcards : wildcards.sample + "."
   shell:
     "bwa mem -t {threads} -R \'{params.RGline}\' analysis/bwa/index/ref {input.fastqs} "
     "1>{output.samFile} "
 
-rule samToBam:
+rule sam2Bam:
   input:
     "analysis/bwa/aln/{sample}/{sample}.sam"
   output:
     "analysis/bwa/aln/{sample}/{sample}.bam"
   message:
-    "Sam to bam coversion"
-  resources: mem = 5000 #5G
+    "INFO: Sam to bam coversion for sample: " + lambda wildcards: wildcards.sample + "."
+  resources: mem = config["med_mem"]
   shell:
     "samtools view -bS {input} 1>{output}"
 
 
-rule sortBam:
+rule sort_bam:
   input:
     unsortedBam = "analysis/bwa/aln/{sample}/{sample}.bam"
   output:
     sortedBam = "analysis/bwa/aln/{sample}/{sample}.sorted.bam",
     bam_index = "analysis/bwa/aln/{sample}/{sample}.sorted.bam.bai"
   message:
-    "Sorting and indexing bam"
-  threads: 4
-  resources: mem = 10000 #10G
+    "INFO: Sorting and indexing bam for sample: " + lambda wildcards: wildcards.sample + "."
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
   shell:
     "samtools sort --threads {threads} -o {output.sortedBam} {input.unsortedBam} "
     "&& samtools index {output.sortedBam}"
 
-rule samtoolsStats:
+rule samtools_stats:
   input:
     unsortedBam = "analysis/bwa/aln/{sample}/{sample}.bam"
   output:
     samStats = "analysis/bwa/aln/{sample}/{sample}.samtools.stats.txt"
   message:
-    "Running samtools stats on {wildcards.sample}"
-  resources: mem = 5000 #5G
+    "INFO: Running samtools stats on sample: " + lambda wildcards: wildcards.sample + "."
+  resources: mem = config["med_mem"]
   shell:
     "samtools stats {input.unsortedBam} | grep ^SN | "
     "gawk 'BEGIN {{ FS=\"\t\"; }} {{ print $2,$3; }}' 1>{output.samStats}"
 
-rule picardStats:
+rule picard_stats:
   input:
     sortedBam = "analysis/bwa/aln/{sample}/{sample}.sorted.bam",
     refFasta = "analysis/roary/core_genome.fasta"
@@ -86,35 +88,35 @@ rule picardStats:
     picardStats = "analysis/bwa/aln/{sample}/" + \
                         "{sample}.picard.wgs_metrics.txt"
   message:
-    "Running picard wgs stats on {wildcards.sample}"
-  resources: mem = 5000 #5G
+    "INFO: Running picard wgs stats on sample: " + lambda wildcards: wildcards.sample + "."
+  resources: mem = config["med_mem"]
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& picard CollectWgsMetrics I={input.sortedBam} O={output.picardStats} "
     "R={input.refFasta}" 
 
-rule mapReportMatrix:
+rule map_report_matrix:
   input:
     metricsList = expand("analysis/bwa/aln/{sample}/" + \
                 "{sample}.samtools.stats.txt", sample = config["isolates"].keys())
   output:
     csv = "analysis/bwa/aln/align_report.csv"
   message:
-    "Gather samtools stats into csv"
-  resources: mem = 1000 #1G
+    "INFO: Gather all samtools stats into csv."
+  resources: mem = config["min_mem"]
   run:
     argList = " -s " + " -s ".join(input.metricsList)
     shell("perl MAMBA/scripts/"
         + "/sam_stats_matrix.pl " + argList + " 1>{output.csv}") 
         
-rule mapReportPlot:
+rule map_report_plot:
   input:
     csv = "analysis/bwa/aln/align_report.csv"
   output:
     png = "analysis/bwa/aln/align_report.png"
   message:
-    "Plotting alignment PNG"
-  resources: mem = 1000 #1G
+    "INFO: Plotting alignment stats into PNG."
+  resources: mem = config["min_mem"]
   shell:
     "{config[Rscript]} MAMBA/scripts/"
     "sam_stats_matrix.R {input.csv} {output.png}" 

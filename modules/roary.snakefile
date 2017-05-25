@@ -20,8 +20,9 @@ rule run_roary:
     "analysis/roary/roary.done",
     "analysis/roary/clustered_proteins",
     "analysis/roary/pan_genome_reference.fa"
-  threads: 12
-  resources: mem = 30000 #30G
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
+  message: "INFO: Processing roary on sample: " + lambda wildcards : wildcards.sample + "."
   shell:
     "roary -p {threads} -cd 95 -f analysis/roary_tmp -e -n -r {input.gff3Files} "
     "&& mv analysis/roary_tmp/* analysis/roary/ && rmdir analysis/roary_tmp && touch {output[0]}"
@@ -32,7 +33,8 @@ rule get_core_genome:
     clusteredProteinsFile = "analysis/roary/clustered_proteins"
   output:
     core = "analysis/roary/core_genome.tab"
-  resources: mem = 5000 #5G
+  resources: mem = config["min_mem"]
+  message: "INFO: Generating core genome."
   shell:
     "query_pan_genome -g {input.clusteredProteinsFile} -a intersection -o {output.core} {input.gff3Files}"
 
@@ -42,7 +44,8 @@ rule get_accessory_genome:
     clusteredProteinsFile = "analysis/roary/clustered_proteins"
   output:
     accessory = "analysis/roary/accessory_genome.tab"
-  resources: mem = 5000 #5G
+  resources: mem = config["min_mem"]
+  message: "INFO: Generating accessory genome."
   shell:
     "query_pan_genome -g {input.clusteredProteinsFile} -a complement -o {output.accessory} {input.gff3Files}"
 
@@ -55,7 +58,8 @@ rule get_core_genome_fasta:
     coreFastaFile = "analysis/roary/core_genome.fasta"
   params:
     isolateCount = len(config["isolates"].keys())
-  resources: mem = 2000 #2G
+  resources: mem = config["min_mem"]
+  message: "INFO: Generating core genome fasta."
   shell:
     "bash MAMBA/scripts/core_genome.bash {input.clusterFile} {params.isolateCount} 1>{output.coreListFile} "
     "&& ruby MAMBA/scripts/fetch_fasta_seqs_for_given_ids.rb \
