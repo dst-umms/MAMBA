@@ -18,8 +18,9 @@ rule call_variants:
     realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
   output:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
-  threads: 12
-  resources: mem = 30000 #30 GB of memory or whatever is available
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
+  message: "INFO: Running HaplotypeCaller on sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& gatk -T HaplotypeCaller -R {input.refFasta} -nct {threads} "
@@ -31,8 +32,9 @@ rule extract_snps:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   output:
     snpFile = "analysis/variants/{sample}/{sample}.snps.vcf"
-  threads: 12
-  resources: mem = 30000 #30 GB of memory
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
+  message: "INFO: Extracting SNPs for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
@@ -44,8 +46,9 @@ rule extract_indels:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   output:
     indelFile = "analysis/variants/{sample}/{sample}.indels.vcf"
-  threads: 12
-  resources: mem = 30000 #30 GB of memory
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
+  message: "INFO: Extracting INDELs for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
@@ -56,7 +59,8 @@ rule filter_snps:
     snpFile = "analysis/variants/{sample}/{sample}.snps.vcf"
   output:
     filteredSNP = "analysis/variants/{sample}/{sample}.snps.filtered.vcf"
-  resources: mem = 5000 #5G
+  resources: mem = config["min_mem"]
+  message: "INFO: Filtering SNPs for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "vcffilter -f \"DP > 9\" -f \"QUAL > 20\"  "
     "{input.snpFile} 1>{output.filteredSNP} "
@@ -66,7 +70,8 @@ rule filter_indels:
     indelFile = "analysis/variants/{sample}/{sample}.indels.vcf"
   output:
     filteredIndel = "analysis/variants/{sample}/{sample}.indels.filtered.vcf"
-  resources: mem = 5000 #5G
+  resources: mem = config["min_mem"]
+  message: "INFO: Filtering INDELs for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "vcffilter -f \"DP > 9\" -f \"QUAL > 20\" "
     "{input.indelFile} 1>{output.filteredIndel} "

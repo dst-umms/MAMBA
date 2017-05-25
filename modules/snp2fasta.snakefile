@@ -19,7 +19,8 @@ rule vcf_to_fasta:
     expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf", sample = config["isolates"])
   output:
     fastaFile = "analysis/snp2fa/snps.fasta"
-  resources: mem = 10000 #10G
+  resources: mem = config["max_mem"]
+  message: "INFO: Converting VCF to Fasta for sample: " + lambda wildcards: wildcards.sample + "."
   shell:
     "source activate MAMBA_PY2 "
     "&& for file in {input}; do vk phylo fasta $file; done 1>{output.fastaFile} "
@@ -29,7 +30,8 @@ rule multi_fasta_align:
     "analysis/snp2fa/snps.fasta"
   output:
     "analysis/snp2fa/snps.aln.fasta"
-  resources: mem = 30000 #30G
+  resources: mem = config["max_mem"]
+  message: "INFO: Multi Fasta Alignment using MUSCLE."
   shell:
     "source activate MAMBA_PY2 "
     "&& muscle -in {input} -out {output} -maxiters 1 -diags" 

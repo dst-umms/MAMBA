@@ -18,8 +18,9 @@ rule tree_build:
     bestTree = "analysis/raxml/RAxML_bestTree.snps"
   params:
     outDir = "analysis/raxml/"
-  resources: mem = 30000 #30G
-  threads: 12
+  resources: mem = config["max_mem"]
+  message: "INFO: Running RAxML to generate phylogeny tree in newick format."
+  threads: config["max_cores"]
   shell:
     "raxmlHPC-PTHREADS -s {input} -m GTRCAT -T {threads} -p 12345 -n snps "
     "&& mv RAxML_*.snps {params.outDir}/ "

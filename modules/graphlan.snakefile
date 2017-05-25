@@ -20,7 +20,8 @@ rule newick_to_phyloXML:
     newickTree = "analysis/raxml/RAxML_bestTree.snps"
   output:
     phyloXML = "analysis/graphlan/MAMBA_without_annot.xml"
-  resources: mem = 2000 #2G
+  resources: mem = config["min_mem"]
+  message: "INFO: Convert newick to phyloXML format without annotation."
   shell:
     "source activate MAMBA_PY2 "
     "&& graphlan_annotate.py {input.newickTree} {output.phyloXML} "
@@ -32,7 +33,8 @@ rule generate_tree_annotation:
   output:
     annotFinal = "analysis/graphlan/MAMBA_annot.txt",
     legendPlot = "analysis/graphlan/MAMBA.legend.png"
-  resources: mem = 2000 #2G
+  resources: mem = config["min_mem"]
+  message: "INFO: Generate annotation to use with graphlan_annotation."
   shell:
     "source activate MAMBA_PY2 "
     "&& python MAMBA/scripts/generate_graphlan_annot.py "
@@ -44,7 +46,8 @@ rule add_annot_to_phyloXML:
     annot = "analysis/graphlan/MAMBA_annot.txt"
   output:
     xml = "analysis/graphlan/MAMBA_with_annot.xml"
-  resources: mem = 2000 #2G
+  resources: mem = config["min_mem"]
+  message: "INFO: Generate phylogXML with annotation added."
   shell:
     "source activate MAMBA_PY2 "
     "&& graphlan_annotate.py --annot {input.annot} "
@@ -55,8 +58,9 @@ rule generate_tree_plot:
     "analysis/graphlan/MAMBA_with_annot.xml"
   output:
     "analysis/graphlan/MAMBA.png"
-  resources: mem = 5000 #5G
+  resources: mem = config["max_mem"]
+  message: "INFO: Generate Graphlan plot."
   shell:
     "source activate MAMBA_PY2 "
-    "&& graphlan.py --format png --dpi 800 {input} {output} "
+    "&& graphlan.py --format png --dpi 300 {input} {output} "
 
