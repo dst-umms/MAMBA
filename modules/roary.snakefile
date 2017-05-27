@@ -22,7 +22,7 @@ rule run_roary:
     "analysis/roary/pan_genome_reference.fa"
   threads: config["max_cores"]
   resources: mem = config["max_mem"]
-  message: "INFO: Processing roary on sample: " + lambda wildcards : wildcards.sample + "."
+  message: "INFO: Processing roary on sample: {wildcards.sample}."
   shell:
     "roary -p {threads} -cd 95 -f analysis/roary_tmp -e -n -r {input.gff3Files} "
     "&& mv analysis/roary_tmp/* analysis/roary/ && rmdir analysis/roary_tmp && touch {output[0]}"

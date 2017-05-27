@@ -27,7 +27,7 @@ rule trimmomatic_PE:
     adapterFile = "MAMBA/static/adapters.fa"
   threads: config["max_cores"]
   resources: mem = config["med_mem"]
-  message: "INFO: Processing Trimmomatic on sample: " + lambda wildcards: wildcards.sample + "."
+  message: "INFO: Processing Trimmomatic on sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& trimmomatic PE -threads {threads} {input} {output.leftPaired} {output.leftUnpaired} \

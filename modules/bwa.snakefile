@@ -37,7 +37,7 @@ rule bwa_align:
               '\\tLB:' + wildcards.sample
   threads: config["max_cores"]
   resources: mem = config["med_mem"]
-  message: "INFO: Processing bwa alignment for sample: " + lambda wildcards : wildcards.sample + "."
+  message: "INFO: Processing bwa alignment for sample: {wildcards.sample}."
   shell:
     "bwa mem -t {threads} -R \'{params.RGline}\' analysis/bwa/index/ref {input.fastqs} "
     "1>{output.samFile} "
@@ -48,7 +48,7 @@ rule sam2Bam:
   output:
     "analysis/bwa/aln/{sample}/{sample}.bam"
   message:
-    "INFO: Sam to bam coversion for sample: " + lambda wildcards: wildcards.sample + "."
+    "INFO: Sam to bam coversion for sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   shell:
     "samtools view -bS {input} 1>{output}"
@@ -61,7 +61,7 @@ rule sort_bam:
     sortedBam = "analysis/bwa/aln/{sample}/{sample}.sorted.bam",
     bam_index = "analysis/bwa/aln/{sample}/{sample}.sorted.bam.bai"
   message:
-    "INFO: Sorting and indexing bam for sample: " + lambda wildcards: wildcards.sample + "."
+    "INFO: Sorting and indexing bam for sample: {wildcards.sample}."
   threads: config["max_cores"]
   resources: mem = config["max_mem"]
   shell:
@@ -74,7 +74,7 @@ rule samtools_stats:
   output:
     samStats = "analysis/bwa/aln/{sample}/{sample}.samtools.stats.txt"
   message:
-    "INFO: Running samtools stats on sample: " + lambda wildcards: wildcards.sample + "."
+    "INFO: Running samtools stats on sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   shell:
     "samtools stats {input.unsortedBam} | grep ^SN | "
@@ -88,7 +88,7 @@ rule picard_stats:
     picardStats = "analysis/bwa/aln/{sample}/" + \
                         "{sample}.picard.wgs_metrics.txt"
   message:
-    "INFO: Running picard wgs stats on sample: " + lambda wildcards: wildcards.sample + "."
+    "INFO: Running picard wgs stats on sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "

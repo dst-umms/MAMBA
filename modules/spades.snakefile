@@ -24,7 +24,7 @@ rule spades_denovo_assembly:
   resources: mem = config["max_mem"]
   params:
     outdir = lambda wildcards: "analysis/spades/" + wildcards.sample
-  message: "INFO: Processing denovo assembly step for sample: " + lambda wildcards : wildcards.sample + "."
+  message: "INFO: Processing denovo assembly step for sample: {wildcards.sample}."
   run:
     mem = resources["mem"]
     mem = int(mem / 1000) 

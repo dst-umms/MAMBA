@@ -20,7 +20,7 @@ rule vcf_to_fasta:
   output:
     fastaFile = "analysis/snp2fa/snps.fasta"
   resources: mem = config["max_mem"]
-  message: "INFO: Converting VCF to Fasta for sample: " + lambda wildcards: wildcards.sample + "."
+  message: "INFO: Converting VCF to Fasta for sample: {wildcards.sample}."
   shell:
     "source activate MAMBA_PY2 "
     "&& for file in {input}; do vk phylo fasta $file; done 1>{output.fastaFile} "

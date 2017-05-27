@@ -28,7 +28,7 @@ rule prokka_contig_annotation:
     gramCommand = "--gram " + config["gram"] if config["gram"] else ''
   threads: config["max_cores"]
   resources: mem = config["max_mem"]
-  message: "INFO: Processing prokka on sample: " + lambda wildcards : wildcards.sample + "."
+  message: "INFO: Processing prokka on sample: {wildcards.sample}."
   shell:
     "prokka --outdir analysis/prokka/{params.sampleName} --force "
     "--prefix {params.sampleName} --compliant --centre UMassMedSchool "
