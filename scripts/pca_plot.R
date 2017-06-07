@@ -19,7 +19,7 @@ if(all(is.element(c("gdsfmt", "SNPRelate"), installed.packages()))){
 
 options(error = function() traceback(2))
 
-generate_PCA <- function(vcf, gds, ld, threads) {
+generatePCA <- function(vcf, gds, ld, threads) {
   snpgdsVCF2GDS(vcf, gds, method = "biallelic.only")
   genofile <- openfn.gds(gds)
   snpset <- snpgdsLDpruning(genofile, ld.threshold = ld)
