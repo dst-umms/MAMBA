@@ -76,4 +76,16 @@ rule filter_indels:
     "vcffilter -f \"DP > 9\" -f \"QUAL > 20\" "
     "{input.indelFile} 1>{output.filteredIndel} "
 
-  
+
+rule merge_vcfs:
+  input:
+    vcfList = expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf", 
+                      sample = config["isolates"].keys())
+  output:
+    mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf"
+  resources: mem = config["max_mem"]
+  message: "INFO: Merging filtered SNP vcfs"
+  shell:
+    "vcf-merge {input.vcfList} 1>{output.mergedVCF} "
+
+ 
