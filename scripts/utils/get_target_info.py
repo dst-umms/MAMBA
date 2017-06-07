@@ -21,6 +21,7 @@ def getTargetInfo(config):
                     _getBWAout(config),
                     _getMapStats(config),
                     _getFilteredSNPs(config),
+                    _getPCA(config),
                     _getRaxml(config),
                     _getGraphlanPlot(config)])
   return targetFiles
@@ -53,6 +54,9 @@ def _getFilteredSNPs(config):
   return [["analysis/variants/{sample}/{sample}.indels.filtered.vcf".format(sample = sample),
           "analysis/variants/{sample}/{sample}.snps.filtered.vcf".format(sample = sample)]
             for sample in config["isolates"].keys()]
+
+def _getPCA(config):
+  return ["MAMBA/MAMBA.snakefile analysis/PCA/gds.file"]
 
 def _getRaxml(config):
   return ["analysis/raxml/RAxML_bestTree.snps"]
