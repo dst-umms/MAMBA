@@ -56,7 +56,7 @@ def _getFilteredSNPs(config):
             for sample in config["isolates"].keys()]
 
 def _getPCA(config):
-  return ["MAMBA/MAMBA.snakefile analysis/PCA/gds.file"]
+  return ["analysis/PCA/gds.file"]
 
 def _getRaxml(config):
   return ["analysis/raxml/RAxML_bestTree.snps"]
