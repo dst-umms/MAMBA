@@ -16,7 +16,8 @@ rule plot_PCA:
   input:
     mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf"
   output:
-    gdsFile = "analysis/PCA/gds.file"
+    gdsFile = "analysis/PCA/gds.file",
+    snpDataFile = "analysis/PCA/snpset.Rdmpd"
   resources: mem = config["max_mem"]
   threads: config["max_cores"]
   params: 
@@ -25,4 +26,19 @@ rule plot_PCA:
   shell:
     "source activate MAMBA_R "
     "&& Rscript MAMBA/scripts/pca_plot.R {input.mergedVCF} "
-    "{output.gdsFile} {params.LD_cutoff} {threads} " 
+    "{output.gdsFile} {output.snpDataFile} {params.LD_cutoff} {threads} "
+
+
+rule snp2fa:
+  input:
+    gdsFile = "analysis/PCA/gds.file",
+    snpDataFile = "analysis/PCA/snpset.Rdmpd"
+  output:
+    faFile = "analysis/PCA/snp.fasta",
+    idFile = "analysis/PCA/snp.ids.txt"
+  resources: mem = config["max_mem"]
+  message: "INFO: Processing SNP to fasta."
+  shell:
+    "source activate MAMBA_R "
+    "&& Rscript MAMBA/scripts/snp2fa.R {input.gdsFile} {input.snpDataFile} "
+    " {output.faFile} {output.idFile} " 

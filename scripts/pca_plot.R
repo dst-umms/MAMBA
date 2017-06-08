@@ -19,19 +19,22 @@ if(all(is.element(c("gdsfmt", "SNPRelate"), installed.packages()))){
 
 options(error = function() traceback(2))
 
-generatePCA <- function(vcf, gds, ld, threads) {
+generatePCA <- function(vcf, gds, snp_data_file, ld, threads) {
   snpgdsVCF2GDS(vcf, gds, method = "biallelic.only")
   genofile <- openfn.gds(gds)
-  snpset <- snpgdsLDpruning(genofile, ld.threshold = ld)
   set.seed(12345)
-  pca <- snpgdsPCA(genofile, snp.id = snpset.id, num.thread = threads)
+  snpset <- snpgdsLDpruning(genofile, ld.threshold = ld)
+  snpset_ids <- unlist(snpset)
+  pca <- snpgdsPCA(genofile, snp.id = snpset_ids, num.thread = threads)
   dump("pca", "/project/umw_paul_langlois/dst/devel/umv/projects/saureus/doyle/pca.Rdmpd")
+  dump("snpset", snp_data_file)
 }
 
 args <- commandArgs(trailingOnly = TRUE)
 VCF_file <- args[1]
 GDS_file <- args[2]
-LD_cutoff <- args[3]
-num_cores <- args[4]
+SNP_data_file <- args[3]
+LD_cutoff <- args[4]
+num_cores <- args[5]
 
-generatePCA(VCF_file, GDS_file, LD_cutoff, num_cores)
+generatePCA(VCF_file, GDS_file, SNP_data_file, LD_cutoff, num_cores)
