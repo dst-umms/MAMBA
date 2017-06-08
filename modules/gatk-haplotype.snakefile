@@ -76,10 +76,31 @@ rule filter_indels:
     "vcffilter -f \"DP > 9\" -f \"QUAL > 20\" "
     "{input.indelFile} 1>{output.filteredIndel} "
 
+rule bzip_vcfs:
+  input:
+    vcfFile = "analysis/variants/{sample}/{sample}.snps.filtered.vcf"
+  output:
+    vcfGz = "analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz"
+  resources: mem = config["min_mem"]
+  message: "INFO: Bzipping vcf file for sample: {wildcards.sample}."
+  shell:
+    "bgzip -c {input.vcfFile} 1>{output.vcfGz} "
+
+rule tabix_vcfs:
+  input:
+    vcfGz = "analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz"
+  output:
+    tabixFile = "analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz.tbi"
+  resources: mem = config["min_mem"]
+  message: "INFO: Tabix indexing bzipped vcf file for sample: {wildcards.sample}."
+  shell:
+    "tabix -p vcf {input.vcfGz} "
 
 rule merge_vcfs:
   input:
-    vcfList = expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf", 
+    vcfList = expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz", 
+                      sample = config["isolates"].keys()),
+    tabixList = expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz.tbi",
                       sample = config["isolates"].keys())
   output:
     mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf"
