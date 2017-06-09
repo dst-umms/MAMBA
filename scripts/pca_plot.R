@@ -33,7 +33,6 @@ generatePCA <- function(annot, vcf, gds, snp_data_file, pdf_file, ld, threads) {
   snpset_ids <- unlist(snpset)
   pca <- snpgdsPCA(genofile, snp.id = snpset_ids, autosome.only = FALSE, remove.monosnp = FALSE,
           need.genmat = TRUE, num.thread = threads)
-  dump("pca", "pca.Rdmpd")
   dump("snpset", snp_data_file)
   
   df <- data.frame(EV1 = pca$eigenvect[,1], EV2 = pca$eigenvect[,2])
@@ -73,7 +72,7 @@ ggbiplot <- function(pcobj, choices = 1:2, scale = 1, pc.biplot = TRUE,
 
   # Base plot
   g <- ggplot(data = df.u, aes(x = xvar, y = yvar)) + 
-          xlab("X label") + ylab("Y label") + coord_equal()
+          xlab("PC1") + ylab("PC2") + coord_equal()
 
   g <- g + geom_point(aes(xvar, yvar), color = "black", 
                 size = 2) + geom_text_repel(aes(xvar, yvar, color = groups, 
