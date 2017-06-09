@@ -14,9 +14,11 @@ __date__ = "June, 7, 2017"
 
 rule plot_PCA:
   input:
-    mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf"
+    mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf",
+    metaFile = "meta.csv"
   output:
     gdsFile = "analysis/PCA/gds.file",
+    pdfFile = "analysis/PCA/PCA.pdf",
     snpDataFile = "analysis/PCA/snpset.Rdmpd"
   resources: mem = config["max_mem"]
   threads: config["max_cores"]
@@ -25,8 +27,8 @@ rule plot_PCA:
   message: "INFO: Processing PCA generation step."
   shell:
     "source activate MAMBA_R "
-    "&& Rscript MAMBA/scripts/pca_plot.R {input.mergedVCF} "
-    "{output.gdsFile} {output.snpDataFile} {params.LD_cutoff} {threads} "
+    "&& Rscript MAMBA/scripts/pca_plot.R {input.mergedVCF} {input.metaFile} "
+    "{output.gdsFile} {output.pdfFile} {output.snpDataFile} {params.LD_cutoff} {threads} "
 
 
 rule snp2fa:
