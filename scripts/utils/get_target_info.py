@@ -56,7 +56,7 @@ def _getFilteredSNPs(config):
             for sample in config["isolates"].keys()]
 
 def _getPCA(config):
-  return ["analysis/PCA/snp.fasta"]
+  return ["analysis/snp2fa/snps.fasta"]
 
 def _getRaxml(config):
   return ["analysis/raxml/RAxML_bestTree.snps"]

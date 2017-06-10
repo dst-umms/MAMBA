@@ -36,8 +36,8 @@ rule snp2fa:
     gdsFile = "analysis/PCA/gds.file",
     snpDataFile = "analysis/PCA/snpset.Rdmpd"
   output:
-    faFile = "analysis/PCA/snp.fasta",
-    idFile = "analysis/PCA/snp.ids.txt"
+    faFile = "analysis/snp2fa/snps.fasta",
+    idFile = "analysis/snp2fa/snps.ids.txt"
   resources: mem = config["max_mem"]
   message: "INFO: Processing SNP to fasta."
   shell:

@@ -23,8 +23,8 @@ gds2fasta <- function (gdsobj, file.name, id_file.name, snp.id = NULL, verbose =
     n.tmp <- length(snp.id)
     snp.id <- snp.ids %in% snp.id
     n.snp <- sum(snp.id)
-    if (n.snp != n.tmp)
-      stop("Some of snp.id do not exist!")
+    #if (n.snp != n.tmp)
+    #  stop("Some of snp.id do not exist!")
     if (n.snp <= 0)
       stop("No SNP in the working dataset.")
     snp.ids <- snp.ids[snp.id]
@@ -82,6 +82,6 @@ fastaFile <- args[3]
 idFile <- args[4]
 
 genofile <- openfn.gds(gdsFile)
-snpset <- load(snpDataFile)
+snpset <- source(snpDataFile)
 snpset_ids <- unlist(snpset)
 gds2fasta(genofile, fastaFile, idFile, snp.id = snpset_ids)

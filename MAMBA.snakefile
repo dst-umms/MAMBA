@@ -16,9 +16,10 @@ __date__ = "Apr, 19, 2017"
   5)  Alignment of reads to annotated core-genome using BWA MEM
   6)  GATK Preprocess rules
   7)  Variant calling using GATK HaplotypeCaller
-  8)  Generate SNP to Mulit Align Fasta using VCF kit and MUSCLE
+  8)  Use SNPRelate to draw PCA plots using SNPs and generate fasta file from SNPs.
+  8)  Generate Multi Align Fasta using MUSCLE
   9)  Max-likelihood phylogeny tree-build using RAxML
-  10) Visualization of clusters using Graphlan and SNPRelate
+  10) Visualization of clusters using Graphlan
 """
 
 from scripts.utils.config_setup import updateConfig
@@ -39,6 +40,6 @@ include: "modules/bwa.snakefile"
 include: "modules/gatk-preprocess.snakefile"
 include: "modules/gatk-haplotype.snakefile"
 include: "modules/snprelate.snakefile"
-include: "modules/snp2fasta.snakefile"
+include: "modules/muscle.snakefile"
 include: "modules/raxml.snakefile"
 include: "modules/graphlan.snakefile"
