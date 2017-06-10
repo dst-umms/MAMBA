@@ -37,14 +37,24 @@ generatePCA <- function(annot, vcf, gds, snp_data_file, pdf_file, ld, threads) {
   
   df <- data.frame(EV1 = pca$eigenvect[,1], EV2 = pca$eigenvect[,2])
   rownames(df) <- pca$sample.id
-  plot_PCAs(annot, df, pdf_file)
+  #remove samples with NA values
+  df_filtered <- na.omit(df)
+  filtered_out_samples <- rownames(which(is.na(df), arr.ind = TRUE))
+  print(paste("INFO: Filtered out samples (Due to NaN values in EigenVals): ", 
+          paste(filtered_out_samples, collapse = ", "), sep = ""))
+  plot_PCAs(annot, df_filtered, pdf_file)
 }
 
 plot_PCAs <- function(annot, df, pdf_file) {
   all_plots <- list()
   for (ann in colnames(annot)){
-    g <- ggbiplot(df, groups = as.character(annot[,ann]), scale = 1, var.scale = 1, obs.scale = 1,
-        labels = rownames(df), choices = 1:2, ellipse=FALSE, circle = TRUE, var.axes = FALSE)
+    ann_df <- annot[, ann, drop = F]
+    ann_names <- rownames(na.omit(ann_df[, ann, drop = F]))
+    df_names <- rownames(df)
+    names_to_keep <- intersect(ann_names, df_names)
+    g <- ggbiplot(df[names_to_keep, , drop = F], groups = as.character(annot[names_to_keep, ann]), 
+          scale = 1, var.scale = 1, obs.scale = 1,
+          labels = names_to_keep, choices = 1:2, ellipse=FALSE, circle = FALSE, var.axes = FALSE)
     g <- g + scale_color_discrete(name = ann)
     g <- g + theme(legend.direction = 'horizontal',
                    legend.position = 'top',
@@ -75,12 +85,7 @@ ggbiplot <- function(pcobj, choices = 1:2, scale = 1, pc.biplot = TRUE,
           xlab("PC1") + ylab("PC2") + coord_equal()
 
   g <- g + geom_point(aes(xvar, yvar), color = "black", 
-                size = 2) + geom_text_repel(aes(xvar, yvar, color = groups, 
-                label = labels), size = 3, fontface = "bold", 
-                box.padding = unit(0.5, "lines"), point.padding = unit(1.6, 
-                  "lines"), segment.color = "#555555", segment.size = 0.5, 
-                arrow = arrow(length = unit(0.01, "npc")), force = 1, 
-                max.iter = 2000) + geom_point(aes(color=groups))
+                size = 2) + geom_point(aes(color=groups))
   return (g)
 }
 
