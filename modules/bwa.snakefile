@@ -118,5 +118,5 @@ rule map_report_plot:
     "INFO: Plotting alignment stats into PNG."
   resources: mem = config["min_mem"]
   shell:
-    "{config[Rscript]} MAMBA/scripts/"
-    "sam_stats_matrix.R {input.csv} {output.png}" 
+    "source activate MAMBA_R "
+    "&& Rscript MAMBA/scripts/sam_stats_matrix.R {input.csv} {output.png}" 

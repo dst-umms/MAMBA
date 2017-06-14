@@ -45,4 +45,4 @@ rule filtered_reads_QC:
   run:
     trimLogList = " -l ".join(input.trimLogs)
     shell("perl MAMBA/scripts/trim_report.pl -l {trimLogList} 1>{output.trimReport}")
-    shell("{config[Rscript]} MAMBA/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")
+    shell("source activate MAMBA_R && Rscript MAMBA/scripts/trim_plot.R {output.trimReport} {output.trimPlot}")
