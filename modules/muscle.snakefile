@@ -21,4 +21,4 @@ rule multi_fasta_align:
   message: "INFO: Multi Fasta Alignment using MUSCLE."
   shell:
     "source activate MAMBA_PY2 "
-    "&& muscle -in {input} -out {output} -maxiters 1 -diags" 
+    "&& muscle -in {input} -out {output}" 
