@@ -31,11 +31,11 @@ def _getTrimOut(config):
 
 def _getSpadesOut(config):
   return ["analysis/spades/" + sample + "/contigs.fasta" 
-    for sample in config["isolates"].keys()]
+    for sample in config["isolate_list"]]
 
 def _getProkkaOut(config):
   return ["analysis/prokka/" + sample + "/" + sample + ".gbk"
-    for sample in config["isolates"].keys()]
+    for sample in config["isolate_list"]]
 
 def _getRoaryOut(config):
   return ["analysis/roary/roary.done"]
@@ -45,7 +45,7 @@ def _getCoreAndAccGenomes(config):
 
 def _getBWAout(config):
   return ["analysis/bwa/aln/{sample}/{sample}.sam".format(sample = sample)
-    for sample in config["isolates"].keys()]
+    for sample in config["isolate_list"]]
 
 def _getMapStats(config):
   return ["analysis/bwa/aln/align_report.png"]
@@ -53,7 +53,7 @@ def _getMapStats(config):
 def _getFilteredSNPs(config):
   return [["analysis/variants/{sample}/{sample}.indels.filtered.vcf".format(sample = sample),
           "analysis/variants/{sample}/{sample}.snps.filtered.vcf".format(sample = sample)]
-            for sample in config["isolates"].keys()]
+            for sample in config["isolate_list"]]
 
 def _getPCA(config):
   return ["analysis/snp2fa/snps.fasta"]

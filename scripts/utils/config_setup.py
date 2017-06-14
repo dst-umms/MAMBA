@@ -14,18 +14,16 @@ __date__ = "Apr, 23, 2017"
 """
 
 import os, subprocess
+import pandas as pd
 
 def updateConfig(config):
   if not "skip_gatk_check" in config:
     _checkForGATK(config)
-  config = _addExecPaths(config)
-  return config
+  return _updateMeta(config)
 
-def _addExecPaths(config):
-  conda_root = subprocess.check_output('conda info --root', shell = True).decode('utf-8').strip()
-  conda_path = os.path.join(conda_root, 'pkgs')
-  config["R"] = os.path.join(conda_root, 'envs', 'MAMBA_R', 'bin', 'R')
-  config["Rscript"] = os.path.join(conda_root, 'envs', 'MAMBA_R', 'bin', 'Rscript')
+def _updateMeta(config):
+  metadata = pd.read_table(config['metasheet'], index_col=0, sep=',', comment='#')
+  config["isolate_list"] = metadata.index
   return config
 
 def _checkForGATK(config):

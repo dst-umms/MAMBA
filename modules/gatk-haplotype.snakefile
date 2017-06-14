@@ -99,9 +99,9 @@ rule tabix_vcfs:
 rule merge_vcfs:
   input:
     vcfList = expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz", 
-                      sample = config["isolates"].keys()),
+                      sample = config["isolate_list"]),
     tabixList = expand("analysis/variants/{sample}/{sample}.snps.filtered.vcf.gz.tbi",
-                      sample = config["isolates"].keys())
+                      sample = config["isolate_list"])
   output:
     mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf"
   resources: mem = config["max_mem"]

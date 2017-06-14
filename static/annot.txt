@@ -1,4 +1,4 @@
-title	MAMBA: MAximuM-likelihood-tree Based microbial Analysis
+title	MAMBA: MAximum-likelihood-Method Based microbial Analysis
 title_font_size	33
 total_plotted_degrees	340
 start_rotation	270

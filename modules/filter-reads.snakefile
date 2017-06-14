@@ -36,7 +36,7 @@ rule trimmomatic_PE:
 
 rule filtered_reads_QC:
   input:
-    trimLogs = expand("analysis/trimmomatic/{sample}/{sample}.trim.log", sample = config["isolates"].keys())
+    trimLogs = expand("analysis/trimmomatic/{sample}/{sample}.trim.log", sample = config["isolate_list"])
   output:
     trimReport = "analysis/trimmomatic/trim_report.csv",
     trimPlot = "analysis/trimmomatic/trim_report.png"

@@ -15,7 +15,7 @@ __date__ = "Apr, 20, 2017"
 
 rule run_roary:
   input:
-    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolates"].keys())
+    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"])
   output:
     "analysis/roary/roary.done",
     "analysis/roary/clustered_proteins",
@@ -29,7 +29,7 @@ rule run_roary:
 
 rule get_core_genome:
   input:
-    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolates"].keys()),
+    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"]),
     clusteredProteinsFile = "analysis/roary/clustered_proteins"
   output:
     core = "analysis/roary/core_genome.tab"
@@ -40,7 +40,7 @@ rule get_core_genome:
 
 rule get_accessory_genome:
   input:
-    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolates"].keys()),
+    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"]),
     clusteredProteinsFile = "analysis/roary/clustered_proteins"
   output:
     accessory = "analysis/roary/accessory_genome.tab"
@@ -57,7 +57,7 @@ rule get_core_genome_fasta:
     coreListFile = "analysis/roary/core_genome.list",
     coreFastaFile = "analysis/roary/core_genome.fasta"
   params:
-    isolateCount = len(config["isolates"].keys())
+    isolateCount = len(config["isolate_list"])
   resources: mem = config["min_mem"]
   message: "INFO: Generating core genome fasta."
   shell:

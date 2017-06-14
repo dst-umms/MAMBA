@@ -98,7 +98,7 @@ rule picard_stats:
 rule map_report_matrix:
   input:
     metricsList = expand("analysis/bwa/aln/{sample}/" + \
-                "{sample}.samtools.stats.txt", sample = config["isolates"].keys())
+                "{sample}.samtools.stats.txt", sample = config["isolate_list"])
   output:
     csv = "analysis/bwa/aln/align_report.csv"
   message:
