@@ -57,7 +57,7 @@ COLOR_CODES = [
           ]
 
 def getMeta(metaFile):
-  df = pd.read_csv(metaFile, sep = ",", header = 0, index_col = 0)
+  df = pd.read_csv(metaFile, sep = ",", header = 0, index_col = 0, comment='#')
   total_uniq_vals = 0
   for index in range(0, len(df.columns)):
     total_uniq_vals = total_uniq_vals + len(pd.Series.unique(df[df.columns[index]]))
