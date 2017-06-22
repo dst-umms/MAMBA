@@ -43,3 +43,6 @@ include: "modules/snprelate.snakefile"
 include: "modules/muscle.snakefile"
 include: "modules/raxml.snakefile"
 include: "modules/graphlan.snakefile"
+
+
+include: "modules/pilon.snakefile"

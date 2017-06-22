@@ -13,17 +13,21 @@ __date__ = "Apr, 19, 2017"
 
 def getTargetInfo(config):
   targetFiles = []
-  targetFiles.extend([_getTrimOut(config),
-                    _getSpadesOut(config),
-                    _getProkkaOut(config),
-                    _getRoaryOut(config),
-                    _getCoreAndAccGenomes(config),
-                    _getBWAout(config),
-                    _getMapStats(config),
-                    _getFilteredSNPs(config),
-                    _getPCA(config),
-                    _getRaxml(config),
-                    _getGraphlanPlot(config)])
+  targetFiles.extend([
+                        _getTrimOut(config),
+                        _getSpadesOut(config),
+                        _getProkkaOut(config),
+                        _getRoaryOut(config),
+                        _getCoreAndAccGenomes(config),
+                        _getBWAout(config),
+                        _getMapStats(config),
+                        #_getFilteredSNPs(config),
+                        #_getPCA(config),
+                        #_getRaxml(config),
+                        #_getGraphlanPlot(config),
+
+                        _getPilonOut(config)
+                    ])
   return targetFiles
 
 def _getTrimOut(config):
@@ -48,7 +52,10 @@ def _getBWAout(config):
     for sample in config["isolate_list"]]
 
 def _getMapStats(config):
-  return ["analysis/bwa/aln/align_report.png"]
+  mapOutFiles = ["analysis/bwa/aln/align_report.png"]
+  if config["reference"]:
+    mapOutFiles.append("analysis/ref_based/bwa/aln/align_report.png")
+  return mapOutFiles
 
 def _getFilteredSNPs(config):
   return [["analysis/variants/{sample}/{sample}.indels.filtered.vcf".format(sample = sample),
@@ -63,3 +70,9 @@ def _getRaxml(config):
 
 def _getGraphlanPlot(config):
   return ["analysis/graphlan/MAMBA.png"]
+
+def _getPilonOut(config):
+  return ["analysis/ref_based/pilon/{sample}/{sample}.vcf".format(sample = sample)
+    for sample in config["isolate_list"]]
+
+
