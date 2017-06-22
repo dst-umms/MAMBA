@@ -26,7 +26,9 @@ def getTargetInfo(config):
                         #_getRaxml(config),
                         #_getGraphlanPlot(config),
 
-                        _getPilonOut(config)
+                        _getPilonOut(config),
+                        _getPilonMergedVcf(config),
+                        _getSnp2FaRefBased(config)
                     ])
   return targetFiles
 
@@ -76,3 +78,8 @@ def _getPilonOut(config):
     for sample in config["isolate_list"]]
 
 
+def _getPilonMergedVcf(config):
+  return ["analysis/ref_based/pilon/MAMBA.snps.filtered.merged.vcf"]
+
+def _getSnp2FaRefBased(config):
+  return ["analysis/ref_based/snp2fa/snps.fasta"]
