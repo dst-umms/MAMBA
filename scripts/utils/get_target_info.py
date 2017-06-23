@@ -23,8 +23,8 @@ def getTargetInfo(config):
                         _getMapStats(config),
                         #_getFilteredSNPs(config),
                         #_getPCA(config),
-                        #_getRaxml(config),
-                        #_getGraphlanPlot(config),
+                        _getRaxml(config),
+                        _getGraphlanPlot(config),
 
                         _getPilonOut(config),
                         _getPilonMergedVcf(config),

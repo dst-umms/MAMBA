@@ -14,7 +14,7 @@ __date__ = "May, 4, 2017"
 
 rule multi_fasta_align:
   input:
-    "analysis/snp2fa/snps.fasta"
+    "analysis/ref_based/pilon/vcf2fa.fasta"
   output:
     "analysis/snp2fa/snps.aln.fasta"
   resources: mem = config["max_mem"]
@@ -22,3 +22,5 @@ rule multi_fasta_align:
   shell:
     "source activate MAMBA_PY2 "
     "&& muscle -in {input} -out {output}" 
+
+
