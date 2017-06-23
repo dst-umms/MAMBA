@@ -17,11 +17,12 @@ __date__ = "May, 10, 2017"
 
 rule newick_to_phyloXML:
   input:
-    newickTree = "analysis/raxml/RAxML_bestTree.snps"
+    newickTree = lambda wildcards: "analysis/" + wildcards.method + 
+                  "/raxml/RAxML_bestTree.snps." + wildcards.method
   output:
-    phyloXML = "analysis/graphlan/MAMBA_without_annot.xml"
+    phyloXML = "analysis/{method}/graphlan/MAMBA_without_annot.xml"
   resources: mem = config["min_mem"]
-  message: "INFO: Convert newick to phyloXML format without annotation."
+  message: "INFO: Convert newick to phyloXML format without annotation for {wildcards.method}."
   shell:
     "source activate MAMBA_PY2 "
     "&& graphlan_annotate.py {input.newickTree} {output.phyloXML} "
@@ -31,10 +32,10 @@ rule generate_tree_annotation:
     meta = "meta.csv",
     annotRef = "MAMBA/static/annot.txt"
   output:
-    annotFinal = "analysis/graphlan/MAMBA_annot.txt",
-    legendPlot = "analysis/graphlan/MAMBA.legend.png"
+    annotFinal = "analysis/{method}/graphlan/MAMBA_annot.txt",
+    legendPlot = "analysis/{method}/graphlan/MAMBA.legend.png"
   resources: mem = config["min_mem"]
-  message: "INFO: Generate annotation to use with graphlan_annotation."
+  message: "INFO: Generate annotation to use with graphlan_annotation for {wildcards.method}."
   shell:
     "source activate MAMBA_PY2 "
     "&& python MAMBA/scripts/generate_graphlan_annot.py "
@@ -42,12 +43,12 @@ rule generate_tree_annotation:
 
 rule add_annot_to_phyloXML:
   input:
-    xml = "analysis/graphlan/MAMBA_without_annot.xml",
-    annot = "analysis/graphlan/MAMBA_annot.txt"
+    xml = lambda wildcards: "analysis/" + wildcards.method + "/graphlan/MAMBA_without_annot.xml",
+    annot = lambda wildcards: "analysis/" + wildcards.method + "/graphlan/MAMBA_annot.txt"
   output:
-    xml = "analysis/graphlan/MAMBA_with_annot.xml"
+    xml = "analysis/{method}/graphlan/MAMBA_with_annot.xml"
   resources: mem = config["min_mem"]
-  message: "INFO: Generate phylogXML with annotation added."
+  message: "INFO: Generate phylogXML with annotation added for {wildcards.method}."
   shell:
     "source activate MAMBA_PY2 "
     "&& graphlan_annotate.py --annot {input.annot} "
@@ -55,11 +56,11 @@ rule add_annot_to_phyloXML:
 
 rule generate_tree_plot:
   input:
-    "analysis/graphlan/MAMBA_with_annot.xml"
+    lambda wildcards: "analysis/" + wildcards.method + "/graphlan/MAMBA_with_annot.xml"
   output:
-    "analysis/graphlan/MAMBA.png"
+    "analysis/{method}/graphlan/MAMBA.png"
   resources: mem = config["max_mem"]
-  message: "INFO: Generate Graphlan plot."
+  message: "INFO: Generate Graphlan plot for {wildcards.method}."
   shell:
     "source activate MAMBA_PY2 "
     "&& graphlan.py --format png --dpi 300 {input} {output} "

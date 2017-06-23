@@ -13,14 +13,15 @@ __date__ = "May, 4, 2017"
 
 rule tree_build:
   input:
-    alnFile = "analysis/snp2fa/snps.aln.fasta"
+    alnFile = lambda wildcards: "analysis/" + wildcards.method + "/snp2fa/snps.aln.fasta"
   output:
-    bestTree = "analysis/raxml/RAxML_bestTree.snps"
+    bestTree = "analysis/{method}/raxml/RAxML_bestTree.snps.{method}"
   params:
-    outDir = "analysis/raxml/"
+    outDir = lambda wildcards: "analysis/" + wildcards.method + "/raxml/",
+    prefix = lambda wildcards: "snps." + wildcards.method
   resources: mem = config["max_mem"]
-  message: "INFO: Running RAxML to generate phylogeny tree in newick format."
+  message: "INFO: Running RAxML to generate phylogeny tree in newick format for {wildcards.method}."
   threads: config["max_cores"]
   shell:
-    "raxmlHPC-PTHREADS -s {input} -m GTRCAT -T {threads} -p 12345 -n snps "
-    "&& mv RAxML_*.snps {params.outDir}/ "
+    "raxmlHPC-PTHREADS -s {input.alnFile} -m GTRCAT -T {threads} -p 12345 -n {params.prefix} "
+    "&& mv RAxML_*.{params.prefix} {params.outDir}/ "

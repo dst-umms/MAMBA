@@ -3,172 +3,175 @@
 
 __author__ = "Mahesh Vangala"
 __email__ = "<vangalamaheshh@gmail.com>"
-__date__ = "June, 22, 2017"
+__date__ = "Apr, 24, 2017"
 
 """
-  Run Pilon on sorted bam file to get VCFs
+  Preprocess rules to get to GATK Haplotype Caller
+
 
 """
 
-rule run_pilon_Ref:
-  input:
-    sorted_bam = "analysis/ref_based/bwa/aln/{sample}/{sample}.sorted.bam",
-    ref_fasta = config["reference"]
-  output:
-    vcf_file = "analysis/ref_based/pilon/{sample}/{sample}.vcf"
-  resources: mem = config["med_mem"]
-  message: "INFO: Performing Pilon on sample: {wildcards.sample}."
-  params: sample = lambda wildcards: wildcards.sample
-  threads: config["max_cores"]
-  shell:
-    "export _JAVA_OPTIONS=\"-Xms{resources[mem]}m -Xmx{resources[mem]}m\" "
-    "&& pilon --genome {input.ref_fasta} --bam {input.sorted_bam} --output {params.sample} "
-    "--outdir analysis/ref_based/pilon/{params.sample} --vcf --fix snps --threads {threads} --mindepth 10 "
+def getRefFasta(wildcards):
+  try:
+    if wildcards.method == "core_based":
+      return 'analysis/core_based/roary/core_genome.fasta'
+    else:
+      return config['reference']
+  except(AttributeError):
+    pass
+  if wildcards.genome == 'analysis/core_based/roary/core_genome':
+    return "analysis/core_based/roary/core_genome.fasta"
+  else:
+    return config["reference"]
 
-rule prepare_ref_fasta_pilon:
+def getDictFile(wildcards):
+  if wildcards.method == "core_based":
+    return 'analysis/core_based/roary/core_genome.dict'
+  else:
+    ref_dict = config['reference'].replace('\.fasta', '\.dict')
+    ref_dict = ref_dict.replace('\.fna', '\.dict')
+    ref_dict = ref_dict.replace('\.fa', '\.dict')
+    return ref_dict
+
+rule prepare_ref_fasta:
   input:
-    refFasta = config["reference"]
+    refFasta = getRefFasta
   output:
-    dictFile = config["reference"] + ".dict"
+    dictFile = "{genome}.dict"
   resources: mem = config["med_mem"]
-  message: "INFO: Creating dict file for reference genome."
+  message: "INFO: Creating dict file for genome."
   shell:
     "samtools faidx {input.refFasta} "
     "&& export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& picard CreateSequenceDictionary REFERENCE={input.refFasta} "
     "OUTPUT={output.dictFile} "
 
-rule filter_snps_pilon:
+rule run_pilon:
   input:
-    refFasta = config["reference"],
-    dictFile = config["reference"] + ".dict",
-    rawVCF = "analysis/ref_based/pilon/{sample}/{sample}.vcf"
+    sorted_bam = lambda wildcards: "analysis/" + wildcards.method + "/bwa/aln/" +
+                  wildcards.sample + "/" + wildcards.sample + ".sorted.bam",
+    ref_fasta = getRefFasta
   output:
-    snpFile = "analysis/ref_based/pilon/{sample}/{sample}.snps.vcf"
+    vcf_file = "analysis/{method}/pilon/{sample}/{sample}.vcf"
+  resources: mem = config["med_mem"]
+  message: "INFO: Performing Pilon for {wildcards.method} on sample: {wildcards.sample}."
+  params: 
+    sample = lambda wildcards: wildcards.sample,
+    method = lambda wildcards: wildcards.method,
+    read_depth = 10
+  threads: config["max_cores"]
+  shell:
+    "export _JAVA_OPTIONS=\"-Xms{resources[mem]}m -Xmx{resources[mem]}m\" "
+    "&& pilon --genome {input.ref_fasta} --bam {input.sorted_bam} --output {params.sample} "
+    "--outdir analysis/{params.method}/pilon/{params.sample} --vcf --fix snps --threads {threads} "
+    "--mindepth {params.read_depth} "
+
+rule fetch_snps:
+  input:
+    refFasta = getRefFasta,
+    dictFile = getDictFile,
+    rawVCF = lambda wildcards: "analysis/" + wildcards.method + "/pilon/" +
+                    wildcards.sample + "/" + wildcards.sample + ".vcf"
+  output:
+    snpFile = "analysis/{method}/pilon/{sample}/{sample}.snps.vcf"
   threads: config["max_cores"]
   resources: mem = config["max_mem"]
-  message: "INFO: Extracting SNPs from pilon vcf for sample: {wildcards.sample}."
+  message: "INFO: Extracting SNPs from pilon vcf for {wildcards.method} for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
     "&& gatk -T SelectVariants -R {input.refFasta} -V {input.rawVCF} "
     "-nt {threads} -selectType SNP -o {output.snpFile} "
-    
 
-rule filter_pilon_ref:
+rule filter_snps:
   input:
-    snpFile = "analysis/ref_based/pilon/{sample}/{sample}.snps.vcf"
+    snpFile = lambda wildcards: "analysis/" + wildcards.method + "/pilon/" +
+                wildcards.sample + "/" + wildcards.sample + ".snps.vcf"
   output:
-    filteredSNP = "analysis/ref_based/pilon/{sample}/{sample}.snps.filtered.vcf"
-  message: "INFO: Filtering Pilon generated vcf file for sample: {wildcards.sample}."
+    filteredSNP = "analysis/{method}/pilon/{sample}/{sample}.snps.filtered.vcf"
+  message: "INFO: Filtering Pilon generated vcf file for {wildcards.method} for sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
+  params:
+    read_depth = 10,
+    quality_cutoff = 20
   shell:
-    "vcffilter -f \"DP > 9\" -f \"QUAL > 20\"  "
+    "vcffilter -f \"DP > $[{params.read_depth} - 1]\" -f \"QUAL > $[{params.quality_cutoff} - 1]\"  "
     "{input.snpFile} 1>{output.filteredSNP} "
-   
-rule bzip_vcfs_pilon:
-  input:
-    vcfFile = "analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf"
-  output:
-    vcfGz = "analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf.gz"
-  resources: mem = config["min_mem"]
-  message: "INFO: Bzipping vcf file for sample: {wildcards.sample}."
-  shell:
-    "bgzip -c {input.vcfFile} 1>{output.vcfGz} "
 
-rule tabix_vcfs_pilon:
+rule get_initial_snp_coords:
   input:
-    vcfGz = "analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf.gz"
+    vcfList = expand("analysis/{method}/pilon/{sample}/{sample}.snps.filtered.vcf",
+                      sample = config["isolate_list"], method = lambda wildcards: wildcards.method)
   output:
-    tabixFile = "analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf.gz.tbi"
+    snp_coord_file = "analysis/{method}/pilon/snp.initial.coord.txt"
   resources: mem = config["min_mem"]
-  message: "INFO: Tabix indexing bzipped vcf file for sample: {wildcards.sample}."
-  shell:
-    "tabix -p vcf {input.vcfGz} "
-
-rule merge_vcfs_pilon:
-  input:
-    vcfList = expand("analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf.gz",
-                      sample = config["isolate_list"]),
-    tabixList = expand("analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf.gz.tbi",
-                      sample = config["isolate_list"])
-  output:
-    mergedVCF = "analysis/ref_based/pilon/MAMBA.snps.filtered.merged.vcf"
-  resources: mem = config["max_mem"]
-  message: "INFO: Merging filtered SNP vcfs"
-  shell:
-    "vcf-merge {input.vcfList} 1>{output.mergedVCF} "
-
-rule get_snp_coords_ref:
-  input:
-    vcfList = expand("analysis/ref_based/pilon/{sample}/{sample}.snps.filtered.vcf",
-                      sample = config["isolate_list"])
-  output:
-    snp_coord_file = "analysis/ref_based/pilon/snp.coord.txt"
-  resources: mem = config["min_mem"]
-  message: "INFO: Processing vcf files to get SNP coordinates from all samples."
+  message: "INFO: Processing vcf files to get initial SNP coordinates from all samples for {wildcards.method}."
   shell:
     "grep -hv '^#' {input.vcfList} | gawk '{{ print $2; }}' | "
     "sort -n | uniq | sort -n 1>{output.snp_coord_file}"
 
-rule get_per_sample_coords_ref:
+rule get_per_sample_coords:
   input:
-    vcf_file = "analysis/ref_based/pilon/{sample}/{sample}.vcf",
-    coord_file = "analysis/ref_based/pilon/snp.coord.txt"
+    vcf_file = lambda wildcards: "analysis/" + wildcards.method + "/pilon/" +
+                wildcards.sample + "/" + wildcards.sample + ".vcf",
+    coord_file = lambda wildcards: "analysis/" + wildcards.method + "/pilon/snp.initial.coord.txt"
   output:
-    sample_coord_file = "analysis/ref_based/pilon/{sample}/{sample}.coord.txt"
+    sample_coord_file = "analysis/{method}/pilon/{sample}/{sample}.coord.txt"
   resources: mem = config["med_mem"]
-  message: "INFO: Processing snp coord info for sample: {wildcards.sample}."
+  message: "INFO: Processing snp coord info for {wildcards.method} for sample: {wildcards.sample}."
   shell:
     "perl MAMBA/scripts/filter_snp_coords.pl --coordfile {input.coord_file} "
     "--vcffile {input.vcf_file} 1>{output.sample_coord_file} "
 
 
-rule get_snp_coords_agg_ref:
+rule get_final_snp_coords:
   input:
-    coord_list = expand("analysis/ref_based/pilon/{sample}/{sample}.coord.txt",
-                  sample = config["isolate_list"])
+    coord_list = expand("analysis/{method}/pilon/{sample}/{sample}.coord.txt",
+                  sample = config["isolate_list"], method = lambda wildcards: wildcards.method)
   output:
-    agg_coord_file = "analysis/ref_based/pilon/snp.coord.filtered.txt"
+    snp_coord_file = "analysis/{method}/pilon/snp.final.coord.txt"
   resources: mem = config["med_mem"]
-  message: "INFO: Filtering common snps across all samples."
+  message: "INFO: Filtering common snps across all samples for {wildcards.method}."
   params: sample_count = len(config["isolate_list"])
   shell:
     "cat {input.coord_list} | sort -n | uniq -c | "
-    "gawk -v num={params.sample_count} \'{{ if($1 > num) {{ print $2; }}}}\' "
-    "1>{output.agg_coord_file} "
+    "gawk -v num={params.sample_count} \'{{ if($1 >= num) {{ print $2; }}}}\' "
+    "1>{output.snp_coord_file} "
 
-
-rule filtered_snp_vcf_ref:
+rule subset_vcf:
   input:
-    vcf_file = "analysis/ref_based/pilon/{sample}/{sample}.vcf",
-    coord_file = "analysis/ref_based/pilon/snp.coord.filtered.txt"
+    vcf_file = lambda wildcards: "analysis/" + wildcards.method + "/pilon/" +
+                wildcards.sample + "/" + wildcards.sample + ".vcf",
+    coord_file = lambda wildcards: "analysis/" + wildcards.method + "/pilon/snp.final.coord.txt"
   output:
-    out_vcf_file = "analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf"
+    out_vcf_file = "analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf"
   resources: mem = config["med_mem"]
-  message: "INFO: Generate agg vcf for sample: {wildcards.sample}."
+  message: "INFO: Generate subset vcf for {wildcards.method} for sample: {wildcards.sample}."
   shell:
     "perl MAMBA/scripts/print_agg_vcf.pl --vcffile {input.vcf_file} "
     "--coordfile {input.coord_file} 1>{output.out_vcf_file} "
 
-rule snp2fa_sample_ref:
+rule snp2fa_per_sample:
   input:
-    vcf_file = "analysis/ref_based/pilon/{sample}/{sample}.snps.agg.vcf"
+    vcf_file = lambda wildcards: "analysis/" + wildcards.method + "/ref_based/pilon/" +
+                wildcards.sample + "/" + wildcards.sample + ".snps.subset.vcf"
   output:
-    fa_file = "analysis/ref_based/pilon/{sample}/{sample}.snps.fa"
+    fa_file = "analysis/{method}/pilon/{sample}/{sample}.snps.fasta"
   resources: mem = config["med_mem"]
-  message: "INFO: Converting agg vcf into fasta for sample: {wildcards.sample}."
+  message: "INFO: Converting agg vcf into fasta for {wildcards.method} for sample: {wildcards.sample}."
   params: sample = lambda wildcards: wildcards.sample
   shell:
     "perl MAMBA/scripts/vcf2fa.pl --vcffile {input.vcf_file} --sample {params.sample} "
     "1>{output.fa_file} "
 
-rule snp2fa_agg_ref:
+rule snp2fa_aggregate:
   input:
-    fa_list = expand("analysis/ref_based/pilon/{sample}/{sample}.snps.fa",
-                      sample = config["isolate_list"])
+    fa_list = expand("analysis/{method}/pilon/{sample}/{sample}.snps.fasta",
+                      sample = config["isolate_list"], method = lambda wildcards: wildcards.method)
   output:
-    fa_file = "analysis/ref_based/pilon/vcf2fa.fasta"
-  message: "INFO: Generated aggregated fasta file from VCFs."
+    fa_file = "analysis/{method}/snp2fa/snps.fasta"
+  message: "INFO: Generated aggregated fasta file from VCFs for {wildcards.method}."
   resources: mem = config["med_mem"]
   shell:
     "cat {input.fa_list} 1>{output.fa_file} "
+
+

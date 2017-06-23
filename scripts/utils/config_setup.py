@@ -24,6 +24,7 @@ def updateConfig(config):
 def _updateMeta(config):
   metadata = pd.read_table(config['metasheet'], index_col=0, sep=',', comment='#')
   config["isolate_list"] = metadata.index
+  config["methods"] = ["ref_based", "core_based"] if config["reference"] is not None else ["core_based"]
   return config
 
 def _checkForGATK(config):

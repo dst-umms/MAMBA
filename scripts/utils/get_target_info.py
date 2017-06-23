@@ -36,18 +36,18 @@ def _getTrimOut(config):
   return ["analysis/trimmomatic/trim_report.png"] 
 
 def _getSpadesOut(config):
-  return ["analysis/spades/" + sample + "/contigs.fasta" 
+  return ["analysis/core_based/spades/" + sample + "/contigs.fasta" 
     for sample in config["isolate_list"]]
 
 def _getProkkaOut(config):
-  return ["analysis/prokka/" + sample + "/" + sample + ".gbk"
+  return ["analysis/core_based/prokka/" + sample + "/" + sample + ".gbk"
     for sample in config["isolate_list"]]
 
 def _getRoaryOut(config):
-  return ["analysis/roary/roary.done"]
+  return ["analysis/core_based/roary/roary.done"]
 
 def _getCoreAndAccGenomes(config):
-  return ["analysis/roary/core_genome.tab", "analysis/roary/accessory_genome.tab"]
+  return ["analysis/core_based/roary/core_genome.tab", "analysis/core_based/roary/accessory_genome.tab"]
 
 def _getBWAout(config):
   return ["analysis/bwa/aln/{sample}/{sample}.sam".format(sample = sample)

@@ -14,12 +14,10 @@ __date__ = "Apr, 19, 2017"
   3)  Perform annotation using Prokka
   4)  Pan and core genome analyses using Roary
   5)  Alignment of reads to annotated core-genome using BWA MEM
-  6)  GATK Preprocess rules
-  7)  Variant calling using GATK HaplotypeCaller
-  8)  Use SNPRelate to draw PCA plots using SNPs and generate fasta file from SNPs.
-  8)  Generate Multi Align Fasta using MUSCLE
-  9)  Max-likelihood phylogeny tree-build using RAxML
-  10) Visualization of clusters using Graphlan
+  6)  Fasta to VCF to fasta using Pilon.
+  7)  Generate Multi Align Fasta using MUSCLE
+  8)  Max-likelihood phylogeny tree-build using RAxML
+  9)  Visualization of clusters using Graphlan
 """
 
 from scripts.utils.config_setup import updateConfig
@@ -37,12 +35,8 @@ include: "modules/spades.snakefile"
 include: "modules/prokka.snakefile" 
 include: "modules/roary.snakefile"
 include: "modules/bwa.snakefile"
-include: "modules/gatk-preprocess.snakefile"
-include: "modules/gatk-haplotype.snakefile"
-include: "modules/snprelate.snakefile"
+include: "module/pilon.snakefile"
 include: "modules/muscle.snakefile"
 include: "modules/raxml.snakefile"
 include: "modules/graphlan.snakefile"
 
-
-include: "modules/pilon.snakefile"

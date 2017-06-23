@@ -14,11 +14,11 @@ __date__ = "Apr, 20, 2017"
 
 rule prokka_contig_annotation:
   input:
-    contigFastaFile = lambda wildcards: "analysis/spades/" + wildcards.sample + \
+    contigFastaFile = lambda wildcards: "analysis/core_based/spades/" + wildcards.sample + \
         "/contigs.fasta"
   output:
-    genbankFile = "analysis/prokka/{sample}/{sample}.gbk",
-    gff3File = "analysis/prokka/{sample}/{sample}.gff"
+    genbankFile = "analysis/core_based/prokka/{sample}/{sample}.gbk",
+    gff3File = "analysis/core_based/prokka/{sample}/{sample}.gff"
   params:
     sampleName = lambda wildcards: wildcards.sample,
     kingdom = config["kingdom"] or 'Bacteria',
@@ -30,7 +30,7 @@ rule prokka_contig_annotation:
   resources: mem = config["max_mem"]
   message: "INFO: Processing prokka on sample: {wildcards.sample}."
   shell:
-    "prokka --outdir analysis/prokka/{params.sampleName} --force "
+    "prokka --outdir analysis/core_based/prokka/{params.sampleName} --force "
     "--prefix {params.sampleName} --compliant --centre UMassMedSchool "
     "--genus {params.genus} --species {params.species} --strain {params.strain} "
     "--kingdom {params.kingdom} {params.gramCommand} "

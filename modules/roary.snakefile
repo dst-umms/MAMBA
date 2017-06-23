@@ -15,24 +15,24 @@ __date__ = "Apr, 20, 2017"
 
 rule run_roary:
   input:
-    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"])
+    gff3Files = expand("analysis/core_based/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"])
   output:
-    "analysis/roary/roary.done",
-    "analysis/roary/clustered_proteins",
-    "analysis/roary/pan_genome_reference.fa"
+    "analysis/core_based/roary/roary.done",
+    "analysis/core_based/roary/clustered_proteins",
+    "analysis/core_based/roary/pan_genome_reference.fa"
   threads: config["max_cores"]
   resources: mem = config["max_mem"]
   message: "INFO: Processing roary using all samples."
   shell:
-    "roary -p {threads} -cd 95 -f analysis/roary_tmp -e -n -r {input.gff3Files} "
-    "&& mv analysis/roary_tmp/* analysis/roary/ && rmdir analysis/roary_tmp && touch {output[0]}"
+    "roary -p {threads} -cd 95 -f analysis/core_based/roary_tmp -e -n -r {input.gff3Files} "
+    "&& mv analysis/core_based/roary_tmp/* analysis/core_based/roary/ && rmdir analysis/core_based/roary_tmp && touch {output[0]}"
 
 rule get_core_genome:
   input:
-    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"]),
-    clusteredProteinsFile = "analysis/roary/clustered_proteins"
+    gff3Files = expand("analysis/core_based/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"]),
+    clusteredProteinsFile = "analysis/core_based/roary/clustered_proteins"
   output:
-    core = "analysis/roary/core_genome.tab"
+    core = "analysis/core_based/roary/core_genome.tab"
   resources: mem = config["min_mem"]
   message: "INFO: Generating core genome."
   shell:
@@ -40,10 +40,10 @@ rule get_core_genome:
 
 rule get_accessory_genome:
   input:
-    gff3Files = expand("analysis/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"]),
-    clusteredProteinsFile = "analysis/roary/clustered_proteins"
+    gff3Files = expand("analysis/core_based/prokka/{isolate}/{isolate}.gff", isolate = config["isolate_list"]),
+    clusteredProteinsFile = "analysis/core_based/roary/clustered_proteins"
   output:
-    accessory = "analysis/roary/accessory_genome.tab"
+    accessory = "analysis/core_based/roary/accessory_genome.tab"
   resources: mem = config["min_mem"]
   message: "INFO: Generating accessory genome."
   shell:
@@ -51,11 +51,11 @@ rule get_accessory_genome:
 
 rule get_core_genome_fasta:
   input:
-    clusterFile = "analysis/roary/clustered_proteins",
-    refFastaFile = "analysis/roary/pan_genome_reference.fa"
+    clusterFile = "analysis/core_based/roary/clustered_proteins",
+    refFastaFile = "analysis/core_based/roary/pan_genome_reference.fa"
   output:
-    coreListFile = "analysis/roary/core_genome.list",
-    coreFastaFile = "analysis/roary/core_genome.fasta"
+    coreListFile = "analysis/core_based/roary/core_genome.list",
+    coreFastaFile = "analysis/core_based/roary/core_genome.fasta"
   params:
     isolateCount = len(config["isolate_list"])
   resources: mem = config["min_mem"]

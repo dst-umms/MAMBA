@@ -16,86 +16,65 @@ def getFastq(wildcards):
   return ["analysis/trimmomatic/{sample}/{sample}.left.paired.fastq.gz".format(sample = wildcards.sample),
           "analysis/trimmomatic/{sample}/{sample}.right.paired.fastq.gz".format(sample = wildcards.sample)]
 
+def getRefFasta(wildcards):
+  if wildcards.method == 'core_based':
+    return "analysis/core_based/roary/core_genome.fasta"
+  else:
+    return config["reference"]
+
 rule build_index:
   input:
-    refFasta = "analysis/roary/core_genome.fasta"
+    refFasta = getRefFasta
   output:
-    refDone = "analysis/bwa/index/ref.done"
+    refDone = "analysis/{method}/bwa/index/ref.done"
   params:
-    prefix = "analysis/bwa/index/ref"
+    prefix = lambda wildcards: "analysis/" + wildcards.method + "/bwa/index/ref"
   resources: mem = config["med_mem"]
-  message: "INFO: Building BWA index with core genome."
-  shell:
-    "bwa index -p {params.prefix} {input.refFasta} "
-    "&& touch {output.refDone} "
-
-rule build_ref_index:
-  input:
-    refFasta = config["reference"]
-  output:
-    refDone = "analysis/ref_based/bwa/index/ref.done"
-  params:
-    prefix = "analysis/ref_based/bwa/index/ref"
-  resources: mem = config["med_mem"]
-  message: "INFO: Building BWA index with ref. genome."
+  message: "INFO: Building BWA index with {wildcards.method} genome."
   shell:
     "bwa index -p {params.prefix} {input.refFasta} "
     "&& touch {output.refDone} "
 
 rule bwa_align:
   input:
-    buildRef = "analysis/bwa/index/ref.done",
+    buildRef = lambda wildcards: "analysis/" + wildcards.method + "/bwa/index/ref.done",
     fastqs = getFastq
   output:
-    samFile = "analysis/bwa/aln/{sample}/{sample}.sam"
+    samFile = "analysis/{method}/bwa/aln/{sample}/{sample}.sam"
   params:
     RGline = lambda wildcards: '@RG\\tID:' + wildcards.sample + '\\tPU:' + \
               wildcards.sample + '\\tSM:' + wildcards.sample + '\\tPL:ILLUMINA' + \
-              '\\tLB:' + wildcards.sample
+              '\\tLB:' + wildcards.sample,
+    bwaIndex = lambda wildcards: "analysis/" + wildcards.method + "/bwa/index/ref"
   threads: config["max_cores"]
   resources: mem = config["med_mem"]
-  message: "INFO: Processing bwa alignment for sample: {wildcards.sample}."
+  message: "INFO: Processing {wildcards.method} bwa alignment for sample: {wildcards.sample}."
   shell:
-    "bwa mem -t {threads} -R \'{params.RGline}\' analysis/bwa/index/ref {input.fastqs} "
-    "1>{output.samFile} "
-
-rule bwa_ref_align:
-  input:
-    buildRef = "analysis/ref_based/bwa/index/ref.done",
-    fastqs = getFastq
-  output:
-    samFile = "analysis/ref_based/bwa/aln/{sample}/{sample}.sam"
-  params:
-    RGline = lambda wildcards: '@RG\\tID:' + wildcards.sample + '\\tPU:' + \
-              wildcards.sample + '\\tSM:' + wildcards.sample + '\\tPL:ILLUMINA' + \
-              '\\tLB:' + wildcards.sample
-  threads: config["max_cores"]
-  resources: mem = config["med_mem"]
-  message: "INFO: Processing bwa alignment for sample: {wildcards.sample}."
-  shell:
-    "bwa mem -t {threads} -R \'{params.RGline}\' analysis/ref_based/bwa/index/ref {input.fastqs} "
+    "bwa mem -t {threads} -R \'{params.RGline}\' {params.bwaIndex} {input.fastqs} "
     "1>{output.samFile} "
 
 rule sam2Bam:
   input:
-    "analysis/bwa/aln/{sample}/{sample}.sam"
+    samFile = lambda wildcards: "analysis/" + wildcards.method + "/bwa/aln/" +
+                wildcards.sample + "/" + wildcards.sample + ".sam"
   output:
-    "analysis/bwa/aln/{sample}/{sample}.bam"
+    bamFile = "analysis/{method}/bwa/aln/{sample}/{sample}.bam"
   message:
-    "INFO: Sam to bam coversion for sample: {wildcards.sample}."
+    "INFO: {wildcards.method} - Sam to bam coversion for sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   shell:
-    "samtools view -bS {input} 1>{output}"
+    "samtools view -bS {input.samFile} 1>{output.bamFile}"
 
 
 rule sort_bam:
   input:
-    unsortedBam = "analysis/bwa/aln/{sample}/{sample}.bam"
+    unsortedBam = lambda wildcards: "analysis/" + wildcards.method + "/bwa/aln/" +
+                    wildcards.sample + "/" + wildcards.sample + ".bam"
   output:
-    sortedBam = "analysis/bwa/aln/{sample}/{sample}.sorted.bam",
-    bam_index = "analysis/bwa/aln/{sample}/{sample}.sorted.bam.bai"
+    sortedBam = "analysis/{method}/bwa/aln/{sample}/{sample}.sorted.bam",
+    bam_index = "analysis/{method}/bwa/aln/{sample}/{sample}.sorted.bam.bai"
   message:
-    "INFO: Sorting and indexing bam for sample: {wildcards.sample}."
+    "INFO: {wildcards.method} - Sorting and indexing bam for sample: {wildcards.sample}."
   threads: config["max_cores"]
   resources: mem = config["max_mem"]
   shell:
@@ -104,11 +83,12 @@ rule sort_bam:
 
 rule samtools_stats:
   input:
-    unsortedBam = "analysis/bwa/aln/{sample}/{sample}.bam"
+    unsortedBam = lambda wildcards: "analysis/" + wildcards.method + "/bwa/aln/" +
+                    wildcards.sample + "/" + wildcards.sample + ".bam"
   output:
-    samStats = "analysis/bwa/aln/{sample}/{sample}.samtools.stats.txt"
+    samStats = "analysis/{method}/bwa/aln/{sample}/{sample}.samtools.stats.txt"
   message:
-    "INFO: Running samtools stats on sample: {wildcards.sample}."
+    "INFO: Running samtools stats for {wildcards.method} on sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   shell:
     "samtools stats {input.unsortedBam} | grep ^SN | "
@@ -116,13 +96,14 @@ rule samtools_stats:
 
 rule picard_stats:
   input:
-    sortedBam = "analysis/bwa/aln/{sample}/{sample}.sorted.bam",
-    refFasta = "analysis/roary/core_genome.fasta"
+    sortedBam = lambda wildcards: "analysis/" + wildcards.method + "/bwa/aln/" + 
+                  wildcards.sample + "/" + wildcards.sample + ".sorted.bam",
+    refFasta = getRefFasta
   output:
-    picardStats = "analysis/bwa/aln/{sample}/" + \
+    picardStats = "analysis/{method}/bwa/aln/{sample}/" + \
                         "{sample}.picard.wgs_metrics.txt"
   message:
-    "INFO: Running picard wgs stats on sample: {wildcards.sample}."
+    "INFO: Running picard wgs stats for {wildcards.method} on sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -131,12 +112,12 @@ rule picard_stats:
 
 rule map_report_matrix:
   input:
-    metricsList = expand("analysis/bwa/aln/{sample}/" + \
-                "{sample}.samtools.stats.txt", sample = config["isolate_list"])
+    metricsList = expand("analysis/{method}/bwa/aln/{sample}/" + \
+                "{sample}.samtools.stats.txt", sample = config["isolate_list"], method = lambda wildcards: wildcards.method)
   output:
-    csv = "analysis/bwa/aln/align_report.csv"
+    csv = "analysis/{method}/bwa/aln/align_report.csv"
   message:
-    "INFO: Gather all samtools stats into csv."
+    "INFO: Gather all samtools stats for {wildcards.method} into csv."
   resources: mem = config["min_mem"]
   run:
     argList = " -s " + " -s ".join(input.metricsList)
@@ -145,78 +126,13 @@ rule map_report_matrix:
         
 rule map_report_plot:
   input:
-    csv = "analysis/bwa/aln/align_report.csv"
+    csv = lambda wildcards: "analysis/" + wildcards.method + "/bwa/aln/align_report.csv"
   output:
-    png = "analysis/bwa/aln/align_report.png"
+    png = "analysis/{method}/bwa/aln/align_report.png"
   message:
     "INFO: Plotting alignment stats into PNG."
   resources: mem = config["min_mem"]
   shell:
     "source activate MAMBA_R "
     "&& Rscript MAMBA/scripts/sam_stats_matrix.R {input.csv} {output.png}" 
-
-rule sam2Bam_Ref:
-  input:
-    "analysis/ref_based/bwa/aln/{sample}/{sample}.sam"
-  output:
-    "analysis/ref_based/bwa/aln/{sample}/{sample}.bam"
-  message:
-    "INFO: Sam to bam coversion for sample: {wildcards.sample}."
-  resources: mem = config["med_mem"]
-  shell:
-    "samtools view -bS {input} 1>{output}"
-
-
-rule sort_bam_Ref:
-  input:
-    unsortedBam = "analysis/ref_based/bwa/aln/{sample}/{sample}.bam"
-  output:
-    sortedBam = "analysis/ref_based/bwa/aln/{sample}/{sample}.sorted.bam",
-    bam_index = "analysis/ref_based/bwa/aln/{sample}/{sample}.sorted.bam.bai"
-  message:
-    "INFO: Sorting and indexing bam for sample: {wildcards.sample}."
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
-  shell:
-    "samtools sort --threads {threads} -o {output.sortedBam} {input.unsortedBam} "
-    "&& samtools index {output.sortedBam}"
-
-rule samtools_stats_Ref:
-  input:
-    unsortedBam = "analysis/ref_based/bwa/aln/{sample}/{sample}.bam"
-  output:
-    samStats = "analysis/ref_based/bwa/aln/{sample}/{sample}.samtools.stats.txt"
-  message:
-    "INFO: Running samtools stats on sample: {wildcards.sample}."
-  resources: mem = config["med_mem"]
-  shell:
-    "samtools stats {input.unsortedBam} | grep ^SN | "
-    "gawk 'BEGIN {{ FS=\"\t\"; }} {{ print $2,$3; }}' 1>{output.samStats}"
-
-rule map_report_matrix_Ref:
-  input:
-    metricsList = expand("analysis/ref_based/bwa/aln/{sample}/" + \
-                "{sample}.samtools.stats.txt", sample = config["isolate_list"])
-  output:
-    csv = "analysis/ref_based/bwa/aln/align_report.csv"
-  message:
-    "INFO: Gather all samtools stats into csv."
-  resources: mem = config["min_mem"]
-  run:
-    argList = " -s " + " -s ".join(input.metricsList)
-    shell("perl MAMBA/scripts/"
-        + "/sam_stats_matrix.pl " + argList + " 1>{output.csv}")
-
-rule map_report_plot_Ref:
-  input:
-    csv = "analysis/ref_based/bwa/aln/align_report.csv"
-  output:
-    png = "analysis/ref_based/bwa/aln/align_report.png"
-  message:
-    "INFO: Plotting alignment stats into PNG."
-  resources: mem = config["min_mem"]
-  shell:
-    "source activate MAMBA_R "
-    "&& Rscript MAMBA/scripts/sam_stats_matrix.R {input.csv} {output.png}"
-
 
