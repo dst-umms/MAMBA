@@ -19,16 +19,9 @@ def getTargetInfo(config):
                         _getProkkaOut(config),
                         _getRoaryOut(config),
                         _getCoreAndAccGenomes(config),
-                        _getBWAout(config),
                         _getMapStats(config),
-                        #_getFilteredSNPs(config),
-                        #_getPCA(config),
-                        _getRaxml(config),
-                        _getGraphlanPlot(config),
-
                         _getPilonOut(config),
-                        _getPilonMergedVcf(config),
-                        _getSnp2FaRefBased(config)
+                        _getGraphlanPlot(config)
                     ])
   return targetFiles
 
@@ -49,37 +42,16 @@ def _getRoaryOut(config):
 def _getCoreAndAccGenomes(config):
   return ["analysis/core_based/roary/core_genome.tab", "analysis/core_based/roary/accessory_genome.tab"]
 
-def _getBWAout(config):
-  return ["analysis/bwa/aln/{sample}/{sample}.sam".format(sample = sample)
-    for sample in config["isolate_list"]]
-
 def _getMapStats(config):
-  mapOutFiles = ["analysis/bwa/aln/align_report.png"]
-  if config["reference"]:
-    mapOutFiles.append("analysis/ref_based/bwa/aln/align_report.png")
-  return mapOutFiles
-
-def _getFilteredSNPs(config):
-  return [["analysis/variants/{sample}/{sample}.indels.filtered.vcf".format(sample = sample),
-          "analysis/variants/{sample}/{sample}.snps.filtered.vcf".format(sample = sample)]
-            for sample in config["isolate_list"]]
-
-def _getPCA(config):
-  return ["analysis/snp2fa/snps.fasta"]
-
-def _getRaxml(config):
-  return ["analysis/raxml/RAxML_bestTree.snps"]
-
-def _getGraphlanPlot(config):
-  return ["analysis/graphlan/MAMBA.png"]
+  return ["analysis/{method}/bwa/aln/align_report.png".format(method = method) 
+            for method in config["methods"]]
 
 def _getPilonOut(config):
-  return ["analysis/ref_based/pilon/{sample}/{sample}.vcf".format(sample = sample)
-    for sample in config["isolate_list"]]
+  return ["analysis/{method}/snp2fa/snps.fasta".format(method = method)
+    for method in config["methods"]]
+
+def _getGraphlanPlot(config):
+  return ["analysis/{method}/graphlan/MAMBA.png".format(method = method)
+    for method in config["methods"]]
 
 
-def _getPilonMergedVcf(config):
-  return ["analysis/ref_based/pilon/MAMBA.snps.filtered.merged.vcf"]
-
-def _getSnp2FaRefBased(config):
-  return ["analysis/ref_based/snp2fa/snps.fasta"]
