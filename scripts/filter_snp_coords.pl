@@ -47,7 +47,7 @@ sub print_coords {
     if(exists $$info{$chr}{$pos} and $filter eq 'PASS' and length($ref) == 1 and
           length($alt) == 1) {
       my($depth) = ($feature_info =~ /DP=(\d+)/);
-      $depth > 9 ? print join(","($chr, $pos)), "\n" : next;     
+      $depth > 9 ? print(join(",",($chr, $pos)), "\n") : next;     
     }    
   }
   close FH or die "Error in closing the file, $file, $!\n";
