@@ -43,16 +43,16 @@ rule generate_tree_annotation:
 
 rule add_annot_to_phyloXML:
   input:
-    xml = lambda wildcards: "analysis/" + wildcards.method + "/graphlan/MAMBA_without_annot.xml",
-    annot = lambda wildcards: "analysis/" + wildcards.method + "/graphlan/MAMBA_annot.txt"
+    files = lambda wildcards: ["analysis/" + wildcards.method + "/graphlan/MAMBA_without_annot.xml",
+                              "analysis/" + wildcards.method + "/graphlan/MAMBA_annot.txt"]
   output:
     xml = "analysis/{method}/graphlan/MAMBA_with_annot.xml"
   resources: mem = config["min_mem"]
   message: "INFO: Generate phylogXML with annotation added for {wildcards.method}."
   shell:
     "source activate MAMBA_PY2 "
-    "&& graphlan_annotate.py --annot {input.annot} "
-    "{input.xml} {output.xml} "
+    "&& graphlan_annotate.py --annot {input.files[1]} "
+    "{input.files[0]} {output.xml} "
 
 rule generate_tree_plot:
   input:

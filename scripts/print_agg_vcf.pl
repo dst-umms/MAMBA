@@ -31,7 +31,8 @@ sub get_coord_info {
   open(FH, "<$file") or die "Error in opening the file, $file, $!\n";
   while(my $line = <FH>) {
     chomp $line;
-    $$info{$line} = undef;
+    my($chr, $pos) = split(",", $line);
+    $$info{$chr}{$pos} = undef;
   }
   close FH or die "Error in closing the file, $file, $!\n";
   return $info;
@@ -46,7 +47,7 @@ sub print_vcf {
       next;
     }
     my($chr, $pos) = split("\t", $line);
-    print $line if exists $$info{$pos};   
+    print $line if exists $$info{$chr}{$pos};
   }
   close FH or die "Error in closing the file, $file, $!\n";
 }

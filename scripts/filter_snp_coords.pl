@@ -31,7 +31,8 @@ sub get_coord_info {
   open(FH, "<$file") or die "error in opening the file, $file, $!\n";
   while(my $line = <FH>) {
     chomp $line;
-    $$info{$line} = undef;
+    my($chr, $pos) = split(" ", $line);
+    $$info{$chr}{$pos} = undef;
   }
   close FH or die "Error in closing the file, $file, $!\n";
   return $info;
@@ -43,10 +44,10 @@ sub print_coords {
   while(my $line = <FH>) {
     next if substr($line, 0, 1) eq '#';
     my($chr, $pos, $id, $ref, $alt, $qual, $filter, $feature_info) = split("\t", $line);
-    if(exists $$info{$pos} and $filter eq 'PASS' and length($ref) == 1 and
+    if(exists $$info{$chr}{$pos} and $filter eq 'PASS' and length($ref) == 1 and
           length($alt) == 1) {
       my($depth) = ($feature_info =~ /DP=(\d+)/);
-      $depth > 9 ? print $pos, "\n" : next;     
+      $depth > 9 ? print join(","($chr, $pos)), "\n" : next;     
     }    
   }
   close FH or die "Error in closing the file, $file, $!\n";

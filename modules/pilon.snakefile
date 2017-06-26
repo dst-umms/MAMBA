@@ -107,8 +107,8 @@ rule get_initial_snp_coords:
   message: "INFO: Processing vcf files to get initial SNP coordinates from all samples for {wildcards.method}."
   run:
     vcfFileList = " ".join(input.vcfList)
-    shell("grep -hv '^#' {vcfFileList} | gawk '{{ print $2; }}' | \
-    sort -n | uniq | sort -n 1>{output.snp_coord_file}")
+    shell("grep -hv '^#' {vcfFileList} | gawk '{{ print $1,$2; }}' | \
+    sort | uniq 1>{output.snp_coord_file}")
 
 rule get_per_sample_coords:
   input:
@@ -134,7 +134,7 @@ rule get_final_snp_coords:
   params: sample_count = len(config["isolate_list"])
   run:
     coord_file_list = " ".join(input.coord_list)
-    shell("cat {input.coord_list} | sort -n | uniq -c | \
+    shell("cat {input.coord_list} | sort | uniq -c | \
     gawk -v num={params.sample_count} \'{{ if($1 >= num) {{ print $2; }}}}\' \
     1>{output.snp_coord_file} ")
 
