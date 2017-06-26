@@ -112,8 +112,8 @@ rule picard_stats:
 
 rule map_report_matrix:
   input:
-    metricsList = expand("analysis/{method}/bwa/aln/{sample}/" + \
-                "{sample}.samtools.stats.txt", sample = config["isolate_list"], method = lambda wildcards: wildcards.method)
+    metricsList = lambda wildcards: ["analysis/{method}/bwa/aln/{sample}/{sample}.samtools.stats.txt".format(
+                    method = wildcards.method, sample = sample) for sample in config["isolate_list"]]
   output:
     csv = "analysis/{method}/bwa/aln/align_report.csv"
   message:
