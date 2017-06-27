@@ -21,6 +21,7 @@ def getTargetInfo(config):
                         _getCoreAndAccGenomes(config),
                         _getMapStats(config),
                         _getPilonOut(config),
+                        _getPca(config),
                         _getGraphlanPlot(config)
                     ])
   return targetFiles
@@ -48,6 +49,10 @@ def _getMapStats(config):
 
 def _getPilonOut(config):
   return ["analysis/{method}/snp2fa/snps.fasta".format(method = method)
+    for method in config["methods"]]
+
+def _getPca(config):
+  return ["analysis/{method}/pca/pca.pdf".format(method = method)
     for method in config["methods"]]
 
 def _getGraphlanPlot(config):
