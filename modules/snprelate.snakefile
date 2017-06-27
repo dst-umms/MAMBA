@@ -12,71 +12,75 @@ __date__ = "June, 7, 2017"
   2) Convert SNP to Fasta
 """
 
+rule bzip_vcfs:
+  input:
+    vcfFile = lambda wildcards: "analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf".format(
+                    method = wildcards.method, sample = wildcards.sample)
+  output:
+    vcfGz = "analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz"
+  resources: mem = config["min_mem"]
+  message: "INFO: Bzipping vcf file for {wildcards.method} for sample: {wildcards.sample}."
+  shell:
+    "bgzip -c {input.vcfFile} 1>{output.vcfGz} "
+
+rule tabix_vcfs:
+  input:
+    vcfGz = lambda wildcards: "analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz".format(
+                    method = wildcards.method, sample = wildcards.sample)
+  output:
+    tabixFile = "analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz.tbi"
+  resources: mem = config["min_mem"]
+  message: "INFO: Tabix indexing bzipped vcf file for {wildcards.method} for sample: {wildcards.sample}."
+  shell:
+    "tabix -p vcf {input.vcfGz} "
+
+rule merge_vcfs:
+  input:
+    vcfList = lambda wildcards: ["analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz".format(
+        method = wildcards.method, sample = sample) for sample in config["isolate_list"]],
+    tabixList = lambda wildcards: ["analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz.tbi".format(
+        method = wildcards.method, sample = sample) for sample in config["isolate_list"])
+  output:
+    mergedVCF = "analysis/{method}/pilon/snps.subset.merged.vcf"
+  resources: mem = config["max_mem"]
+  message: "INFO: Merging filtered SNP vcfs for {wildcards.method}."
+  run:
+    vcf_list = " ".join(input.vcfList)
+    shell("vcf-merge {vcf_list} 1>{output.mergedVCF} ")
+
 rule plot_PCA:
   input:
-    mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf",
+    mergedVCF = lambda wildcards: "analysis/{method}/pilon/snps.subset.merged.vcf".format(method = wildcards.method),
     metaFile = "meta.csv"
   output:
-    gdsFile = "analysis/PCA/gds.file",
-    pdfFile = "analysis/PCA/PCA.pdf",
-    snpDataFile = "analysis/PCA/snpset.Rdmpd"
+    gdsFile = "analysis/{method}/pca/gds.file",
+    pdfFile = "analysis/{method}/pca/pca.pdf",
+    snpDataFile = "analysis/{method}/pca/snpset.Rdmpd",
+    pcaDataFile = "analysis/{method}/pca/pca.Rdmpd"
   resources: mem = config["max_mem"]
   threads: config["max_cores"]
   params: 
     LD_cutoff = 0.2
-  message: "INFO: Processing PCA generation step."
+  message: "INFO: Processing PCA generation step for {wildcards.method}."
   shell:
     "source activate MAMBA_R "
     "&& Rscript MAMBA/scripts/pca_plot.R {input.mergedVCF} {input.metaFile} "
     "{output.gdsFile} {output.pdfFile} {output.snpDataFile} {params.LD_cutoff} {threads} "
+    "{output.pcaDataFile} "
 
 
 rule snp2fa:
   input:
-    gdsFile = "analysis/PCA/gds.file",
-    snpDataFile = "analysis/PCA/snpset.Rdmpd"
+    gdsFile = lambda wildcards: "analysis/{method}/pca/gds.file".format(method = wildcards.method),
+    snpDataFile = lambda wildcards: "analysis/{method}/pca/snpset.Rdmpd".format(method = wildcards.method)
   output:
-    faFile = "analysis/snp2fa/snps.fasta",
-    idFile = "analysis/snp2fa/snps.ids.txt"
+    faFile = "analysis/{method}/pca/snps.fasta",
+    idFile = "analysis/{method}/pca/snps.ids.txt"
   resources: mem = config["max_mem"]
-  message: "INFO: Processing SNP to fasta."
+  message: "INFO: Processing SNP to fasta using SNPRelate for {wildcards.method}."
   shell:
     "source activate MAMBA_R "
     "&& Rscript MAMBA/scripts/snp2fa.R {input.gdsFile} {input.snpDataFile} "
     " {output.faFile} {output.idFile} " 
-
-
-rule plot_PCA_Ref:
-  input:
-    mergedVCF = "analysis/ref_based/pilon/MAMBA.snps.filtered.merged.vcf",
-    metaFile = "meta.csv"
-  output:
-    gdsFile = "analysis/ref_based/PCA/gds.file",
-    pdfFile = "analysis/ref_based/PCA/PCA.pdf",
-    snpDataFile = "analysis/ref_based/PCA/snpset.Rdmpd"
-  resources: mem = config["max_mem"]
-  threads: config["max_cores"]
-  params:
-    LD_cutoff = 0.2
-  message: "INFO: Processing PCA generation step."
-  shell:
-    "source activate MAMBA_R "
-    "&& Rscript MAMBA/scripts/pca_plot.R {input.mergedVCF} {input.metaFile} "
-    "{output.gdsFile} {output.pdfFile} {output.snpDataFile} {params.LD_cutoff} {threads} "
-
-
-rule snp2fa_Ref:
-  input:
-    gdsFile = "analysis/ref_based/PCA/gds.file",
-    snpDataFile = "analysis/ref_based/PCA/snpset.Rdmpd"
-  output:
-    faFile = "analysis/ref_based/snp2fa/snps.fasta",
-    idFile = "analysis/ref_based/snp2fa/snps.ids.txt"
-  resources: mem = config["max_mem"]
-  message: "INFO: Processing SNP to fasta."
-  shell:
-    "source activate MAMBA_R "
-    "&& Rscript MAMBA/scripts/snp2fa.R {input.gdsFile} {input.snpDataFile} "
-    " {output.faFile} {output.idFile} "
 
 

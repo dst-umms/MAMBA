@@ -25,7 +25,7 @@ library(ggrepel)
 
 options(error = function() traceback(2))
 
-generatePCA <- function(annot, vcf, gds, snp_data_file, pdf_file, ld, threads) {
+generatePCA <- function(annot, vcf, gds, snp_data_file, pdf_file, ld, threads, pca_data_file) {
   snpgdsVCF2GDS(vcf, gds, method = "biallelic.only")
   genofile <- snpgdsOpen(gds)
   set.seed(12345)
@@ -34,7 +34,7 @@ generatePCA <- function(annot, vcf, gds, snp_data_file, pdf_file, ld, threads) {
   pca <- snpgdsPCA(genofile, snp.id = snpset_ids, autosome.only = FALSE, remove.monosnp = FALSE,
           need.genmat = TRUE, num.thread = threads)
   dump("snpset", snp_data_file)
-  
+  dump("pca", pca_data_file)
   df <- data.frame(EV1 = pca$eigenvect[,1], EV2 = pca$eigenvect[,2])
   rownames(df) <- pca$sample.id
   #remove samples with NA values
@@ -97,8 +97,9 @@ pca_pdf_file <- args[4]
 SNP_data_file <- args[5]
 LD_cutoff <- as.numeric(args[6])
 num_cores <- as.numeric(args[7])
+pca_data_file <- args[8]
 
 annot <- read.csv(meta_file, sep = ",", header = T, row.names = 1,
                       stringsAsFactors = FALSE, check.names = F, comment.char = '#')
 
-generatePCA(annot, VCF_file, GDS_file, SNP_data_file, pca_pdf_file, LD_cutoff, num_cores)
+generatePCA(annot, VCF_file, GDS_file, SNP_data_file, pca_pdf_file, LD_cutoff, num_cores. pca_data_file)
