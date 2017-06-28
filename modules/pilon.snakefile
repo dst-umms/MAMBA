@@ -147,7 +147,7 @@ rule subset_vcf:
   resources: mem = config["med_mem"]
   message: "INFO: Generate subset vcf for {wildcards.method} for sample: {wildcards.sample}."
   shell:
-    "perl MAMBA/scripts/print_agg_vcf.pl --vcffile {input.files[0]} "
+    "perl MAMBA/scripts/print_subset_vcf.pl --vcffile {input.files[0]} "
     "--coordfile {input.files[1]} 1>{output.out_vcf_file} "
 
 rule snp2fa_per_sample:

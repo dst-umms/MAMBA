@@ -46,10 +46,15 @@ sub print_vcf {
       print $line;
       next;
     }
-    my($chr, $pos) = split("\t", $line);
+    chomp $line;
+    my($chr, $pos, $id, $ref, $alt, $qual, $filter, $tag_info, $genotype, $genotype_val) = split("\t", $line);
     if (exists $$info{$chr}{$pos} and not $$info{$chr}{$pos}{'seen'}) {
       $$info{$chr}{$pos}{'seen'} = 1;
-      print $line;
+      if ($alt eq '.') {
+        $alt = $ref;
+        $genotype_val = 0;
+      } else { $genotype_val = 1; }
+      print join("\t", ($chr, $pos, $id, $ref, $alt, $qual, $filter, $tag_info, $genotype, $genotype_val)), "\n";
     }
   }
   close FH or die "Error in closing the file, $file, $!\n";

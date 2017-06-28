@@ -39,14 +39,25 @@ rule merge_vcfs:
     vcfList = lambda wildcards: ["analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz".format(
         method = wildcards.method, sample = sample) for sample in config["isolate_list"]],
     tabixList = lambda wildcards: ["analysis/{method}/pilon/{sample}/{sample}.snps.subset.vcf.gz.tbi".format(
-        method = wildcards.method, sample = sample) for sample in config["isolate_list"])
+        method = wildcards.method, sample = sample) for sample in config["isolate_list"]]
   output:
     mergedVCF = "analysis/{method}/pilon/snps.subset.merged.vcf"
   resources: mem = config["max_mem"]
   message: "INFO: Merging filtered SNP vcfs for {wildcards.method}."
   run:
     vcf_list = " ".join(input.vcfList)
-    shell("vcf-merge {vcf_list} 1>{output.mergedVCF} ")
+    sample_list = ",".join(config["isolate_list"])
+    shell("vcf-merge {vcf_list} |  \
+            perl -e 'my @samples = split(\",\", $ARGV[0]); \
+              my @vals = (\"#CHROM\", \"POS\", \"ID\", \"REF\", \"ALT\", \"QUAL\", \"FILTER\", \"INFO\", \"FORMAT\"); \
+              my @header = (@vals, @samples); \
+              while(my $line = <STDIN>) {{ \
+                if(substr($line, 0, 6) eq \"#CHROM\") {{ \
+                  print join(\"\\t\", @header), \"\\n\"; \
+                }} else {{ \
+                  print $line; \
+                }} \
+              }}' {sample_list} 1>{output.mergedVCF} ")
 
 rule plot_PCA:
   input:
