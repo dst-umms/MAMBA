@@ -15,9 +15,8 @@ __date__ = "Apr, 19, 2017"
   4)  Pan and core genome analyses using Roary
   5)  Alignment of reads to annotated core-genome using BWA MEM
   6)  Fasta to VCF to fasta using Pilon.
-  7)  Generate Multi Align Fasta using MUSCLE
-  8)  Max-likelihood phylogeny tree-build using RAxML
-  9)  Visualization of clusters using Graphlan
+  7)  Max-likelihood phylogeny tree-build using RAxML
+  8)  Visualization of clusters using Graphlan
 """
 
 from scripts.utils.config_setup import updateConfig
@@ -37,7 +36,6 @@ include: "modules/roary.snakefile"
 include: "modules/bwa.snakefile"
 include: "modules/pilon.snakefile"
 include: "modules/snprelate.snakefile"
-include: "modules/muscle.snakefile"
 include: "modules/raxml.snakefile"
 include: "modules/graphlan.snakefile"
 

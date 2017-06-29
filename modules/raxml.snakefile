@@ -13,7 +13,7 @@ __date__ = "May, 4, 2017"
 
 rule tree_build:
   input:
-    alnFile = lambda wildcards: "analysis/" + wildcards.method + "/snp2fa/snps.aln.fasta"
+    alnFile = lambda wildcards: "analysis/" + wildcards.method + "/snp2fa/snps.fasta"
   output:
     bestTree = "analysis/{method}/raxml/RAxML_bestTree.snps.{method}"
   params:
