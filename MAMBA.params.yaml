@@ -16,6 +16,10 @@ max_mem: 30000   #30G
 max_cores: 12
 
 
+#------ VCF Filtering Based On ReadDepth & Map Quality ---#
+read_depth: 
+map_quality:
+
 #----------------------------------------#
 #                                        #
 #   Core Genome Based Approach - Params  #

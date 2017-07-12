@@ -60,12 +60,13 @@ def getMeta(metaFile):
   df = pd.read_csv(metaFile, sep = ",", header = 0, index_col = 0, comment='#')
   total_uniq_vals = 0
   for index in range(0, len(df.columns)):
-    total_uniq_vals = total_uniq_vals + len(pd.Series.unique(df[df.columns[index]]))
+    total_uniq_vals = len(pd.Series.unique(df[df.columns[index]]))
   if total_uniq_vals > len(COLOR_CODES):
     error_mes = """
       #--------------     ERROR MESSAGE    ----------------#
-      The number of unique attributes in 'meta.csv' exceeds
-      the number of contrast color codes (269). Exiting ... !
+      The number of unique attributes in the column - %s - 
+      in  'meta.csv' exceeds the number of contrast color 
+      codes (269) supported by this software. Exiting ... !
       #----------------------------------------------------#
     """
     print(error_mes)
@@ -75,8 +76,8 @@ def getMeta(metaFile):
 
 def getColorInfo(df):
   info = list()
-  counter = 0
   for index in range(0, len(df.columns)):
+    counter = 0
     d = OrderedDict()
     for uniq_attr in pd.Series.unique(df[df.columns[index]]):
       if pd.isnull(uniq_attr):
@@ -121,6 +122,8 @@ def printMeta(metaInfo, colorInfo, ref, out):
   for ringLevel in range(0, len(colorInfo)):
     ofh.write("ring_label" + "\t" + str(ringLevel + 1) + "\t" + metaInfo.columns[ringLevel] + "\n")
     ofh.write("ring_separator_color" + "\t" + str(ringLevel + 1) + "\t" + "black" + "\n")
+    ofh.write("ring_internal_separator_thickness" + "\t" + str(ringLevel + 1) + "\t" + str(0.5) + "\n")
+    ofh.write("ring_external_separator_thickness" + "\t" + str(ringLevel + 1) + "\t" + str(0.5) + "\n")
   
   ofh.close()
 

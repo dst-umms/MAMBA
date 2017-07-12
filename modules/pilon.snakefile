@@ -57,14 +57,12 @@ rule run_pilon:
   message: "INFO: Performing Pilon for {wildcards.method} on sample: {wildcards.sample}."
   params: 
     sample = lambda wildcards: wildcards.sample,
-    method = lambda wildcards: wildcards.method,
-    read_depth = 10
+    method = lambda wildcards: wildcards.method
   threads: config["max_cores"]
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources[mem]}m -Xmx{resources[mem]}m\" "
     "&& pilon --genome {input.ref_fasta} --bam {input.sorted_bam} --output {params.sample} "
     "--outdir analysis/{params.method}/pilon/{params.sample} --vcf --fix snps --threads {threads} "
-    "--mindepth {params.read_depth} "
 
 rule fetch_snps:
   input:
@@ -91,8 +89,8 @@ rule filter_snps:
   message: "INFO: Filtering Pilon generated vcf file for {wildcards.method} for sample: {wildcards.sample}."
   resources: mem = config["med_mem"]
   params:
-    read_depth = 10,
-    quality_cutoff = 20
+    read_depth = config["read_depth"] or 1,
+    quality_cutoff = config["map_quality"] or 1
   shell:
     "vcffilter -f \"DP > $[{params.read_depth} - 1]\" -f \"QUAL > $[{params.quality_cutoff} - 1]\"  "
     "{input.snpFile} 1>{output.filteredSNP} "

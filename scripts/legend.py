@@ -21,7 +21,7 @@ from cycler import cycler
 
 def plotLegend(colors, names, pngFile):
   fig = plt.figure()
-  figlegend = plt.figure(figsize = (8, 8), dpi = 800, tight_layout = True)
+  figlegend = plt.figure(figsize = (12, 8), dpi = 800, tight_layout = True)
   ax = fig.add_subplot(111)
   ax.set_prop_cycle(cycler('color', colors))
   lines = ax.plot(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
