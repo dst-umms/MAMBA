@@ -68,7 +68,7 @@ def getMeta(metaFile):
       in  'meta.csv' exceeds the number of contrast color 
       codes (269) supported by this software. Exiting ... !
       #----------------------------------------------------#
-    """
+    """ % df.columns[index]
     print(error_mes)
     sys.exit(1)
   return df
