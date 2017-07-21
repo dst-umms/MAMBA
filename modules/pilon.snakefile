@@ -28,9 +28,9 @@ def getDictFile(wildcards):
   if wildcards.method == "core_based":
     return 'analysis/core_based/roary/core_genome.dict'
   else:
-    ref_dict = config['reference'].replace('\.fasta', '\.dict')
-    ref_dict = ref_dict.replace('\.fna', '\.dict')
-    ref_dict = ref_dict.replace('\.fa', '\.dict')
+    ref_dict = config['reference'].replace('.fasta', '.dict')
+    ref_dict = ref_dict.replace('.fna', '.dict')
+    ref_dict = ref_dict.replace('.fa', '.dict')
     return ref_dict
 
 rule prepare_ref_fasta:
