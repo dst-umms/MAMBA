@@ -65,7 +65,7 @@ GATK is a dependency for MAMBA. Due to licensing issues, we could not package th
 
 We have placed test data (subset of Aanensen et. al published data) on Dropbox and can be downloaded using the link,
 
-`http://bit.ly/2twmgsN`.
+`http://bit.ly/2twmgsN`
 
 Assuming, you have downloaded the files into MAMBA_TEST_DATA folder, follow the instructions below.
 
@@ -125,9 +125,40 @@ Look into documentation to replace values for,
 
 ***Running “MAMBA” with your data:***
 
-  
+1. Presuming you have downloaded MAMBA and have a folder with fastq files in the current working space, your first step is to generate "config.yaml" and "meta.csv" files using,
+
+```
+source activate MAMBA
+
+python MAMBA/scripts/generate_config.py --fastq_folder /path/to/dir_with_fastqs 1>config.yaml 2>meta.csv
+
+```
+
+**Important Note:** (Input FastQ Filename Convention)
+
+The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightmate).
+
+2. Edit "meta.csv" with project specific meta data. (See "Test Run" section above and explore meta.csv for understanding).
+
+3. Edit "config.yaml" file to choose both system level params and pipeline wide params.
+
+4. Launch pipeline using commands mentioned in "Test Run" section above.
 
 
+***
+
+***MAMBA Output:***
+
+* MAMBA output is present in "analysis" folder in the local workspace.
+
+
+***
+
+***Contact us:***
+Have any questions about MAMBA or wish to report any bugs please email `vangalamaheshh@gmail.com` or open an issue on our github page.  
+
+
+***
 
 
 
