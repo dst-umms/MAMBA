@@ -53,54 +53,78 @@ conda env create -f MAMBA/envs/MAMBA_PY.env.yaml
 conda env create -f MAMBA/envs/MAMB_R.env.yaml
 ```
 
-GATK Software: (One time set-up)
+**GATK Software (One time set-up only):**
+
 GATK is a dependency for MAMBA. Due to licensing issues, we could not package this tool as part of MAMBA. If you do not have GATK executable within your system PATH variable, you will need to download the “GenomeAnalysisTK-3.7.tar.bz2” and mention the path to the file in “config.yaml” (see below).
 
-Execution:
-Kicking MAMBA tyres with test data:
-We have placed test data (subset of Aanensen et. al published data) on Dropbox and can be downloaded using the link - http://bit.ly/2twmgsN - Assuming, you have downloaded the files into MAMBA_TEST_DATA folder, follow the instructions below.
+***
 
-You should have a directory structure similar to this at this point.
+***Execution:***
 
+######Kicking MAMBA tyres with test data:
+
+We have placed test data (subset of Aanensen et. al published data) on Dropbox and can be downloaded using the link,
+
+`http://bit.ly/2twmgsN`.
+
+Assuming, you have downloaded the files into MAMBA_TEST_DATA folder, follow the instructions below.
+
+1. You should have a directory structure similar to this at this point.
+
+```
 .
 ├── MAMBA
 └── MAMBA_TEST_DATA
+```
 
-Copy, “config.yml” and “meta.csv” from test_data folder to current working space. Now the directory structure looks like this,
+2. Copy, “config.yml” and “meta.csv” from test_data folder to current working space. Now the directory structure looks like this,
 
+```
 ├── config.yaml
 ├── MAMBA
 ├── MAMBA_TEST_DATA
 └── meta.csv
+```
 
-Feel free to edit “config.yaml” to change memory and cpu values to fit to your system, using your favorite text editor. You should also update “gatk_exec” field with path to GATK bunzipped tar ball only if you don’t have GATK already installed in your system (See “GATK Software” section above to read more on this.)
+3. Feel free to edit “config.yaml” to change memory and cpu values to fit to your system, using your favorite text editor. You should also update “gatk_exec” field with path to GATK bunzipped tar ball only if you don’t have GATK already installed in your system (See “GATK Software” section above to read more on this.)
 
-Now, before kicking off the pipeline, there is one thing we need to do, which is, to activate “MAMBA” environment using command,
+4. Now, before kicking off the pipeline, there is one thing we need to do, which is, to activate “MAMBA” environment using command,
 
-source  activate MAMBA
+`source activate MAMBA`
 
 You should see at the start of command prompt,
 
-(MAMBA) >
+`(MAMBA) >`
 
 Finally, we are all set to launch the pipeline using,
 
-Local computer: snakemake -s MAMBA/MAMBA.snakefile --jobs <number_of_cpus_available> --latency-wait 60 >&MAMBA.log &
+**Local computer:**
 
-LSF cluster: snakemake -s MAMBA/MAMBA.snakefile --cluster “bsub -n {threads} -e logs/ -o logs/ -J MAMBA -W 360 -q <queue_name> -R \”rusage[mem={resources[mem]}]\” -R \”span[hosts=1]\” ” --jobs <number of jobs you want to run in parallel> --latency-wait 60 >&MAMBA.log &
+`snakemake -s MAMBA/MAMBA.snakefile --jobs <number_of_cpus_available> --latency-wait 60 >&MAMBA.log &`
 
-Other cluster: Look into documentation to replace values for,
+**LSF cluster:**
 
--n number_of_threads
--e write logs to a folder
--o write output to a folder
--J job_name
--W wall_clock_time_for_a_running_job
--q name of the queue
--mem memory to be given in “MegaBytes”
+```
+snakemake -s MAMBA/MAMBA.snakefile --cluster “bsub -n {threads} -e logs/ -o logs/ -J MAMBA -W 360 -q <queue_name> -R \”rusage[mem={resources[mem]}]\” -R \”span[hosts=1]\” ” --jobs <number of jobs you want to run in parallel> --latency-wait 60 >&MAMBA.log &
+```
+
+**Other cluster:** 
+
+Look into documentation to replace values for,
+
+* -n number_of_threads
+* -e write logs to a folder
+* -o write output to a folder
+* -J job_name
+* -W wall_clock_time_for_a_running_job
+* -q name of the queue
+* -mem memory to be given in “MegaBytes”
 
 
-Running “MAMBA” with your data:
+***
+
+***Running “MAMBA” with your data:***
+
   
 
 
