@@ -43,13 +43,15 @@ In addition, make sure, the following library files are present on your system.
 
 First, let’s clone the MAMBA code repo, using
 
-git clone https://github.com/dst-umms/MAMBA.git
+`git clone https://github.com/dst-umms/MAMBA.git`
 
 One time only set-up of “conda” virtual environments, using
 
+```
 conda env create -f MAMBA/envs/MAMBA.env.yaml
 conda env create -f MAMBA/envs/MAMBA_PY.env.yaml
 conda env create -f MAMBA/envs/MAMB_R.env.yaml
+```
 
 GATK Software: (One time set-up)
 GATK is a dependency for MAMBA. Due to licensing issues, we could not package this tool as part of MAMBA. If you do not have GATK executable within your system PATH variable, you will need to download the “GenomeAnalysisTK-3.7.tar.bz2” and mention the path to the file in “config.yaml” (see below).
