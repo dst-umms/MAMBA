@@ -55,7 +55,7 @@ conda env create -f MAMBA/envs/MAMB_R.env.yaml
 
 **GATK Software (One time set-up only):**
 
-GATK is a dependency for MAMBA. Due to licensing issues, we could not package this tool as part of MAMBA. If you do not have GATK executable within your system PATH variable, you will need to download the “GenomeAnalysisTK-3.7.tar.bz2” and add the path to the file in “config.yaml” (see below).
+GATK is a dependency for MAMBA. Due to licensing issues, we could not package this tool as part of MAMBA. If you do not have the GATK executable within your system PATH variable, you will need to download the “GenomeAnalysisTK-3.7.tar.bz2” and add the path to the “config.yaml” file (see below).
 
 ***
 
@@ -86,9 +86,9 @@ Assuming you have downloaded the files into MAMBA_TEST_DATA folder, follow the i
 └── meta.csv
 ```
 
-3. Using your favorite text editor, feel free to edit “config.yaml” to change memory and cpu values to fit to your system. You should also update “gatk_exec” field with path to GATK bunzipped tar ball only if you don’t have GATK already installed in your system (See “GATK Software” section above to read more on this.)
+3. Using your favorite text editor, feel free to edit “config.yaml” to change memory and cpu values to fit your system. You should also update “gatk_exec” field with the path to GATK bunzipped tar ball only if you don’t have GATK already installed in your system (See “GATK Software” section above to read more on this.)
 
-4. Now, before kicking off the pipeline, there is one thing we need to do, which is, to activate “MAMBA” environment using command,
+4. Now, before kicking off the pipeline, we need to activate the “MAMBA” environment using this command:
 
     `source activate MAMBA`
 
@@ -96,7 +96,7 @@ Assuming you have downloaded the files into MAMBA_TEST_DATA folder, follow the i
 
     `(MAMBA) >`
 
-Finally, we are all set to launch the pipeline using,
+Finally, we are all set to launch the pipeline. The exact command depends on whether you are on a local computer or a cluster.
 
 **Local computer:**
 
@@ -110,7 +110,7 @@ snakemake -s MAMBA/MAMBA.snakefile --cluster “bsub -n {threads} -e logs/ -o lo
 
 **Other cluster:** 
 
-Look into documentation to replace values for,
+Other clusters may require different command arguments. Look into the documentation to replace values for:
 
 * -n number_of_threads
 * -e write logs to a folder
@@ -125,7 +125,7 @@ Look into documentation to replace values for,
 
 ***Running “MAMBA” with your data:***
 
-1. Presuming you have downloaded MAMBA and have a folder with fastq files in the current working space, your first step is to generate "config.yaml" and "meta.csv" files using,
+1. Presuming you have downloaded MAMBA and have a folder with fastq files in the current working space, your first step is to generate the "config.yaml" and "meta.csv" files using:
 
 ```
 source activate MAMBA
@@ -138,25 +138,25 @@ python MAMBA/scripts/generate_config.py --fastq_folder /path/to/dir_with_fastqs 
 
 The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightmate).
 
-2. Edit "meta.csv" with project specific meta data. (See "Test Run" section above and explore meta.csv for understanding).
+2. Edit "meta.csv" with project specific meta data. (See "Test Run" [section name?] section above and explore meta.csv for a better understanding).
 
-3. Edit "config.yaml" file to choose both system level params and pipeline wide params.
+3. Edit the "config.yaml" file to choose both system level params and pipeline wide params.
 
-4. Launch pipeline using commands mentioned in "Test Run" section above.
+4. Launch the pipeline using the commands mentioned in "Test Run" [section name?] section above.
 
 
 ***
 
 ***MAMBA Output:***
 
-* MAMBA output is present in "analysis" folder in the local workspace.
+* MAMBA output is present in the "analysis" folder in the local workspace.
 
 
 ***
 
 ***Contact us:***
 
-Have any questions about MAMBA or wish to report any bugs please email `vangalamaheshh@gmail.com` or open an issue on our github page.  
+Should you have any questions about MAMBA or wish to report any bugs please email `vangalamaheshh@gmail.com` or open an issue on our github page.  
 
 
 ***
