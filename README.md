@@ -5,10 +5,10 @@
 
 ***Background:***
 
-Using NGS Whole Genome Sequencing data to elucidate transmission mechanism and genetic diversity of bacterial isolates has become widespread for the purposes of epidemiological  and disease control. To address the complexity involved in analysing such data, some open source tools exist whose work is published in peer reviewed journals. However, the existing tools do not provide an end-to-end solution and demands the end user to figure out many components that need to be put together in order to successfully generate the results. This, in turn, involves significant computational knowledge which many of the researchers do not feel comfortable with. To address this concern, we have developed an automated, push-button style, end-to-end pipeline, MAMBA: MAximum likelihood-Method Based microbial Analysis. The main goals we have achieved with MAMBA are,
+Using NGS Whole Genome Sequencing data to elucidate the transmission mechanism and genetic diversity of bacterial isolates has become widespread for the purposes of epidemiological (?) and disease control. To address the complexity involved in analysing such data, some open source tools exist whose work is published in peer reviewed journals. However, the existing tools do not provide an end-to-end solution and demands the end user to figure out many components that need to be put together in order to successfully generate the results. This, in turn, involves significant computational knowledge that many researchers may not have. To address this concern, we have developed an automated, push-button style, end-to-end pipeline called MAMBA: MAximum likelihood-Method Based microbial Analysis. The main goals we have achieved with MAMBA are,
 
 * **Abstracting away the installation:** 
-Satisfying the few core dependencies (see dependencies section below), MAMBA is just 3 commands away to fully install all the tools and dependencies required to run the entire pipeline. 
+Satisfying the few core dependencies (see dependencies section below), MAMBA r just 3 commands away to fully install all the tools and dependencies required to run the entire pipeline. 
 
 * **Abstracting away the environment:** MAMBA can be installed and executed on any systems with LINUX/UNIX environment, without administrative privileges.
 
