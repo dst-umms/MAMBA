@@ -61,7 +61,7 @@ GATK is a dependency for MAMBA. Due to licensing issues, we could not package th
 
 ***Execution:***
 
-######Kicking MAMBA tyres with test data:
+***Kicking MAMBA tyres with test data:***
 
 We have placed test data (subset of Aanensen et. al published data) on Dropbox and can be downloaded using the link,
 
@@ -90,11 +90,11 @@ Assuming, you have downloaded the files into MAMBA_TEST_DATA folder, follow the 
 
 4. Now, before kicking off the pipeline, there is one thing we need to do, which is, to activate “MAMBA” environment using command,
 
-`source activate MAMBA`
+    `source activate MAMBA`
 
-You should see at the start of command prompt,
+    You should see at the start of command prompt,
 
-`(MAMBA) >`
+    `(MAMBA) >`
 
 Finally, we are all set to launch the pipeline using,
 
