@@ -1,5 +1,5 @@
 # MAMBA
-======== 
+
 ## MAximum-likelihood-Method Based microbial Analysis
 -----------------------------------------------------
 
