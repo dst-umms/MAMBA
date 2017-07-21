@@ -3,22 +3,22 @@
 ## MAximum-likelihood-Method Based microbial Analysis
 -----------------------------------------------------
 
-**###Background:**
+***Background:***
 
 Using NGS Whole Genome Sequencing data to elucidate transmission mechanism and genetic diversity of bacterial isolates has become widespread for the purposes of epidemiological  and disease control. To address the complexity involved in analysing such data, some open source tools exist whose work is published in peer reviewed journals. However, the existing tools do not provide an end-to-end solution and demands the end user to figure out many components that need to be put together in order to successfully generate the results. This, in turn, involves significant computational knowledge which many of the researchers do not feel comfortable with. To address this concern, we have developed an automated, push-button style, end-to-end pipeline, MAMBA: MAximum likelihood-Method Based microbial Analysis. The main goals we have achieved with MAMBA are,
 
-* ######Abstracting away the installation: 
+* **Abstracting away the installation:** 
 Satisfying the few core dependencies (see dependencies section below), MAMBA is just 3 commands away to fully install all the tools and dependencies required to run the entire pipeline. 
 
-* ######Abstracting away the environment: MAMBA can be installed and executed on any systems with LINUX/UNIX environment, without administrative privileges.
+* **Abstracting away the environment:** MAMBA can be installed and executed on any systems with LINUX/UNIX environment, without administrative privileges.
 
-* ######Parallel Execution: MAMBA is built on the backs of “Snakemake” - a python framework to build Bioinformatics pipelines - and thus, makes use of multi-core architecture, be it a local computer or high-performance-computing-cluster, significantly speeding up the processing times.
+* **Parallel Execution:** MAMBA is built on the backs of “Snakemake” - a python framework to build Bioinformatics pipelines - and thus, makes use of multi-core architecture, be it a local computer or high-performance-computing-cluster, significantly speeding up the processing times.
 
-* ######Publication-ready Plots: MAMBA glues together many tools (published in peer reviewed journals) and generates a stand-alone HTML Report (comprised of embedded images) that can easily be shared over email amongst the investigators.
+* **Publication-ready Plots:** MAMBA glues together many tools (published in peer reviewed journals) and generates a stand-alone HTML Report (comprised of embedded images) that can easily be shared over email amongst the investigators.
 
 ***
 
-**###Prerequisites:**
+***Prerequisites:***
 
 In order to successfully install MAMBA, following dependencies must be satisfied. Many of these requirements are core part of LINUX/UNIX OS and thus be already available in most cases. Regardless, make sure the versions are correct and most importantly the required library files are present on your system.
 
