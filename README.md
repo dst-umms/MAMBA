@@ -22,21 +22,25 @@ Satisfying the few core dependencies (see dependencies section below), MAMBA is 
 
 In order to successfully install MAMBA, following dependencies must be satisfied. Many of these requirements are core part of LINUX/UNIX OS and thus be already available in most cases. Regardless, make sure the versions are correct and most importantly the required library files are present on your system.
 
+* gcc >= 4.8
+* g++ >=4.8
+* GNU make >= 4.0
+* bzip2
+* wget
+* git
+* miniconda3 (https://conda.io/docs/install/quick.html)
 
-gcc >= 4.8
-g++ >=4.8
-GNU make >= 4.0
-bzip2
-wget
-git
-miniconda3 (https://conda.io/docs/install/quick.html)
 
 In addition, make sure, the following library files are present on your system.
 
-libbz2.so.1.0
-libjemalloc.so.1
-libXrender.so.1
-Installation:
+* libbz2.so.1.0
+* libjemalloc.so.1
+* libXrender.so.1
+
+***
+
+***Installation:***
+
 First, let’s clone the MAMBA code repo, using
 
 git clone https://github.com/dst-umms/MAMBA.git
