@@ -155,6 +155,7 @@ The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightma
 ***
 
 ***Contact us:***
+
 Have any questions about MAMBA or wish to report any bugs please email `vangalamaheshh@gmail.com` or open an issue on our github page.  
 
 
