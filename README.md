@@ -5,12 +5,12 @@
 
 ***Background:***
 
-Using NGS Whole Genome Sequencing data to elucidate the transmission mechanism and genetic diversity of bacterial isolates has become widespread for the purposes of epidemiological (?) and disease control. To address the complexity involved in analysing such data, some open source tools exist whose work is published in peer reviewed journals. However, the existing tools do not provide an end-to-end solution and demands the end user to figure out many components that need to be put together in order to successfully generate the results. This, in turn, involves significant computational knowledge that many researchers may not have. To address this concern, we have developed an automated, push-button style, end-to-end pipeline called MAMBA: MAximum likelihood-Method Based microbial Analysis. The main goals we have achieved with MAMBA are,
+Using NGS Whole Genome Sequencing data to elucidate the transmission mechanism and genetic diversity of bacterial isolates has become widespread for the purposes of epidemiological research and disease control. To address the complexity involved in analysing such data, some open source tools exist whose work is published in peer reviewed journals. However, the existing tools do not provide an end-to-end solution and demands the end user to figure out many components that need to be put together in order to successfully generate the results. This, in turn, involves significant computational knowledge that many researchers may not have. To address this concern, we have developed an automated, push-button style, end-to-end pipeline called MAMBA: MAximum likelihood-Method Based microbial Analysis. The main goals we have achieved with MAMBA are,
 
 * **Abstracting away the installation:** 
-MAMBA requires just 3 commands to satisfy a few core dependencies (see Prerequisites section below) and fully install all the tools and dependencies necessary to run the entire pipeline. 
+MAMBA requires just 3 commands in addition to a few core dependencies (see Prerequisites section below) to fully install all the tools and dependencies necessary to run the entire pipeline. 
 
-* **Abstracting away the environment:** MAMBA can be installed and executed on any systems running a LINUX/UNIX environment, without administrative privileges.
+* **Abstracting away the environment:** MAMBA can be installed and executed on any systems running a LINUX/UNIX OS, without administrative privileges.
 
 * **Parallel Execution:** MAMBA is built on the back of “Snakemake” - a python framework to build Bioinformatics pipelines - which is capable of leveraging multi-core architectures, be it a local computer or high-performance-computing-cluster, to significantly speed up the processing times.
 
@@ -142,7 +142,7 @@ The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightma
 
 3. Edit the "config.yaml" file to choose both system level params and pipeline wide params.
 
-4. Launch the pipeline using the commands mentioned in "Test Run" [section name?] section above.
+4. Launch the pipeline using the commands mentioned in "Kicking MAMBA tires with test data" section above.
 
 
 ***
@@ -162,10 +162,3 @@ Should you have any questions about MAMBA or wish to report any bugs please emai
 ***
 
 
-
-
-
-
-
-
- 
