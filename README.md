@@ -138,7 +138,7 @@ python MAMBA/scripts/generate_config.py --fastq_folder /path/to/dir_with_fastqs 
 
 The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightmate).
 
-2. Edit "meta.csv" with project specific meta data. (See "Test Run" [section name?] section above and explore meta.csv for a better understanding).
+2. Edit "meta.csv" with project specific meta data. (See "Kicking MAMBA tires with test data" section above and explore meta.csv for a better understanding).
 
 3. Edit the "config.yaml" file to choose both system level params and pipeline wide params.
 
