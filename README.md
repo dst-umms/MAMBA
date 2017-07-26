@@ -49,7 +49,7 @@ Next, set up the “conda” virtual environments (one-time only), using
 
 ```
 conda env create -f MAMBA/envs/MAMBA.env.yaml
-conda env create -f MAMBA/envs/MAMBA_PY.env.yaml
+conda env create -f MAMBA/envs/MAMBA_PY2.env.yaml
 conda env create -f MAMBA/envs/MAMB_R.env.yaml
 ```
 
