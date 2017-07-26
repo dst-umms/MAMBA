@@ -23,7 +23,7 @@ rule multi_fasta_align:
     fa = lambda wildcards: "analysis/" + wildcards.method + "/snp2fa/snps.fasta"
   output:
     aln = "analysis/{method}/snp2fa/snps.aln.fasta"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Multi Fasta Alignment using MUSCLE for {wildcards.method}."
   params:
     appx_params = get_muscle_params

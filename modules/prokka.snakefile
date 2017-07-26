@@ -26,8 +26,8 @@ rule prokka_contig_annotation:
     species = config["species"] or 'species',
     strain = config["strain"] or 'strain',
     gramCommand = "--gram " + config["gram"] if config["gram"] else ''
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Processing prokka on sample: {wildcards.sample}."
   shell:
     "prokka --outdir analysis/core_based/prokka/{params.sampleName} --force "

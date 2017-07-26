@@ -44,8 +44,8 @@ rule realign_targets:
     dedupBamIndex = "analysis/preprocess/{sample}/{sample}.dedup.bai"
   output:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Realigning targets for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -60,7 +60,7 @@ rule realign_indels:
     targetFile = "analysis/preprocess/{sample}/{sample}.target_intervals.list"
   output:
     realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Realigning indels for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -73,8 +73,8 @@ rule call_variants:
     realignBam = "analysis/preprocess/{sample}/{sample}.realign.bam"
   output:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Running HaplotypeCaller on sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -87,8 +87,8 @@ rule extract_snps:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   output:
     snpFile = "analysis/variants/{sample}/{sample}.snps.vcf"
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Extracting SNPs for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -101,8 +101,8 @@ rule extract_indels:
     rawVCF = "analysis/variants/{sample}/{sample}.raw.vcf"
   output:
     indelFile = "analysis/variants/{sample}/{sample}.indels.vcf"
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Extracting INDELs for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -159,7 +159,7 @@ rule merge_vcfs:
                       sample = config["isolate_list"])
   output:
     mergedVCF = "analysis/variants/MAMBA.snps.filtered.merged.vcf"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Merging filtered SNP vcfs"
   shell:
     "vcf-merge {input.vcfList} 1>{output.mergedVCF} "

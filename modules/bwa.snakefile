@@ -46,7 +46,7 @@ rule bwa_align:
               wildcards.sample + '\\tSM:' + wildcards.sample + '\\tPL:ILLUMINA' + \
               '\\tLB:' + wildcards.sample,
     bwaIndex = lambda wildcards: "analysis/" + wildcards.method + "/bwa/index/ref"
-  threads: config["max_cores"]
+  threads: config["med_cores"]
   resources: mem = config["med_mem"]
   message: "INFO: Processing {wildcards.method} bwa alignment for sample: {wildcards.sample}."
   shell:
@@ -75,8 +75,8 @@ rule sort_bam:
     bam_index = "analysis/{method}/bwa/aln/{sample}/{sample}.sorted.bam.bai"
   message:
     "INFO: {wildcards.method} - Sorting and indexing bam for sample: {wildcards.sample}."
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   shell:
     "samtools sort --threads {threads} -o {output.sortedBam} {input.unsortedBam} "
     "&& samtools index {output.sortedBam}"

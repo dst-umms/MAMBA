@@ -59,7 +59,7 @@ rule generate_tree_plot:
     lambda wildcards: "analysis/" + wildcards.method + "/graphlan/MAMBA_with_annot.xml"
   output:
     "analysis/{method}/graphlan/MAMBA.png"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Generate Graphlan plot for {wildcards.method}."
   shell:
     "source activate MAMBA_PY2 "

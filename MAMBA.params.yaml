@@ -13,7 +13,9 @@ max_mem: 30000   #30G
 
 
 #------               Parallelization          -----------#
-max_cores: 12
+min_cores: 1   #this is always 1 by default
+med_cores: 8   #except raxml all other multi core modules use this many threads 
+max_cores: 12  #only raxml uses maximum cores 
 
 
 #------ VCF Filtering Based On ReadDepth & Map Quality ---#

@@ -20,8 +20,8 @@ rule spades_denovo_assembly:
     getFastq
   output:
     protected("analysis/core_based/spades/{sample}/contigs.fasta")
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   params:
     outdir = lambda wildcards: "analysis/core_based/spades/" + wildcards.sample
   message: "INFO: Processing denovo assembly step for sample: {wildcards.sample}."

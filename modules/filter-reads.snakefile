@@ -25,7 +25,7 @@ rule trimmomatic_PE:
     trimLog = protected("analysis/trimmomatic/{sample}/{sample}.trim.log")
   params:
     adapterFile = "MAMBA/static/adapters.fa"
-  threads: config["max_cores"]
+  threads: config["med_cores"]
   resources: mem = config["med_mem"]
   message: "INFO: Processing Trimmomatic on sample: {wildcards.sample}."
   shell:

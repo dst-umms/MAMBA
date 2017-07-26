@@ -42,7 +42,7 @@ rule merge_vcfs:
         method = wildcards.method, sample = sample) for sample in config["isolate_list"]]
   output:
     mergedVCF = "analysis/{method}/pilon/snps.subset.merged.vcf"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Merging filtered SNP vcfs for {wildcards.method}."
   run:
     vcf_list = " ".join(input.vcfList)
@@ -68,8 +68,8 @@ rule plot_PCA:
     pdfFile = "analysis/{method}/pca/pca.pdf",
     snpDataFile = "analysis/{method}/pca/snpset.Rdmpd",
     pcaDataFile = "analysis/{method}/pca/pca.Rdmpd"
-  resources: mem = config["max_mem"]
-  threads: config["max_cores"]
+  resources: mem = config["med_mem"]
+  threads: config["med_cores"]
   params: 
     LD_cutoff = 0.2
   message: "INFO: Processing PCA generation step for {wildcards.method}."
@@ -87,7 +87,7 @@ rule snp2fa:
   output:
     faFile = "analysis/{method}/pca/snps.fasta",
     idFile = "analysis/{method}/pca/snps.ids.txt"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Processing SNP to fasta using SNPRelate for {wildcards.method}."
   shell:
     "source activate MAMBA_R "

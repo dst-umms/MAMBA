@@ -58,7 +58,7 @@ rule run_pilon:
   params: 
     sample = lambda wildcards: wildcards.sample,
     method = lambda wildcards: wildcards.method
-  threads: config["max_cores"]
+  threads: 1 #config["med_cores"]
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources[mem]}m -Xmx{resources[mem]}m\" "
     "&& pilon --genome {input.ref_fasta} --bam {input.sorted_bam} --output {params.sample} "
@@ -72,8 +72,8 @@ rule fetch_snps:
                     wildcards.sample + "/" + wildcards.sample + ".vcf"
   output:
     snpFile = "analysis/{method}/pilon/{sample}/{sample}.snps.vcf"
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Extracting SNPs from pilon vcf for {wildcards.method} for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "

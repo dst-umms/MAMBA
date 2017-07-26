@@ -19,7 +19,7 @@ rule run_pilon_Ref:
   resources: mem = config["med_mem"]
   message: "INFO: Performing Pilon on sample: {wildcards.sample}."
   params: sample = lambda wildcards: wildcards.sample
-  threads: config["max_cores"]
+  threads: config["med_cores"]
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources[mem]}m -Xmx{resources[mem]}m\" "
     "&& pilon --genome {input.ref_fasta} --bam {input.sorted_bam} --output {params.sample} "
@@ -45,8 +45,8 @@ rule filter_snps_pilon:
     rawVCF = "analysis/ref_based/pilon/{sample}/{sample}.vcf"
   output:
     snpFile = "analysis/ref_based/pilon/{sample}/{sample}.snps.vcf"
-  threads: config["max_cores"]
-  resources: mem = config["max_mem"]
+  threads: config["med_cores"]
+  resources: mem = config["med_mem"]
   message: "INFO: Extracting SNPs from pilon vcf for sample: {wildcards.sample}."
   shell:
     "export _JAVA_OPTIONS=\"-Xms{resources.mem}m -Xmx{resources.mem}m\" "
@@ -93,7 +93,7 @@ rule merge_vcfs_pilon:
                       sample = config["isolate_list"])
   output:
     mergedVCF = "analysis/ref_based/pilon/MAMBA.snps.filtered.merged.vcf"
-  resources: mem = config["max_mem"]
+  resources: mem = config["med_mem"]
   message: "INFO: Merging filtered SNP vcfs"
   shell:
     "vcf-merge {input.vcfList} 1>{output.mergedVCF} "
