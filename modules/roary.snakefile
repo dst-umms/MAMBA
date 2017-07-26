@@ -20,8 +20,8 @@ rule run_roary:
     "analysis/core_based/roary/roary.done",
     "analysis/core_based/roary/clustered_proteins",
     "analysis/core_based/roary/pan_genome_reference.fa"
-  threads: config["med_cores"]
-  resources: mem = config["med_mem"]
+  threads: config["max_cores"]
+  resources: mem = config["max_mem"]
   message: "INFO: Processing roary using all samples."
   shell:
     "roary -p {threads} -cd 95 -f analysis/core_based/roary_tmp -e -n -r {input.gff3Files} "
