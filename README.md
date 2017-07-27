@@ -86,7 +86,7 @@ Assuming you have downloaded the files into MAMBA_TEST_DATA folder, follow the i
 └── meta.csv
 ```
 
-3. Using your favorite text editor, feel free to edit “config.yaml” to change memory and cpu values to fit your system. You should also update “gatk_exec” field with the path to GATK bunzipped tar ball only if you don’t have GATK already installed in your system (See “GATK Software” section above to read more on this.)
+3. Using your favorite text editor, feel free to edit “config.yaml” to change memory and cpu values to fit your system. You should also update “gatk_exec” field with the path to GATK bzipped tar ball only if you don’t have GATK already installed in your system (See “GATK Software” section above to read more on this.)
 
 4. Now, before kicking off the pipeline, we need to activate the “MAMBA” environment using this command:
 
