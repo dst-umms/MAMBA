@@ -147,6 +147,15 @@ The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightma
 
 ***
 
+NOTE: For more information on installation and execution of MAMBA, listen to the Video below.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=wmW6izBum-U
+" target="_blank"><img src="http://img.youtube.com/vi/wmW6izBum-U/0.jpg" 
+alt="MAMBA" width="240" height="180" border="10" /></a>
+
+
+***
+
 ***MAMBA Output:***
 
 * MAMBA output is present in the "analysis" folder in the local workspace.
