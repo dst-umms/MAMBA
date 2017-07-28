@@ -147,7 +147,7 @@ The files ought to be named as _R1.fastq.gz (leftmate) and _R2.fastq.gz (rightma
 
 ***
 
-***NOTE: For more information on installation and execution of MAMBA, listen to the Video below.
+**NOTE: For more information on installation and execution of MAMBA, listen to the Video below.
 
 <div style="text-align:center">
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=wmW6izBum-U" 
