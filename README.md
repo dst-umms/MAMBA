@@ -1,4 +1,4 @@
-<img src="static/mamba-logo.png" width="32px" height="32px" />
+<img src="static/mamba-logo.png" width="60px" height="60px" />
 # MAMBA
 
 ## MAximum-likelihood-Method Based microbial Analysis
