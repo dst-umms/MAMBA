@@ -1,3 +1,4 @@
+![alt text](static/mamba-logo.png)
 # MAMBA
 
 ## MAximum-likelihood-Method Based microbial Analysis
