@@ -1,5 +1,5 @@
 
-<img src="static/mamba-logo.png" width="60px" height="90px" />
+<img src="static/mamba-logo.png" />
 
 # MAMBA
 
