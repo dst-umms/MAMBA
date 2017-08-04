@@ -12,11 +12,11 @@ __date__ = "Apr, 19, 2017"
   1)  Filter FastQ reads based on quality score using Trimmomatic
   2)  Perform denovo assembly using SPAdes
   3)  Perform annotation using Prokka
-  4)  Pan and core genome analyses using Roary
-  5)  Alignment of reads to annotated core-genome using BWA MEM
+  4)  Core genome analysis using Roary
+  5)  Alignment of reads to annotated core-genome and/or ref-genome using BWA MEM
   6)  Fasta to VCF to fasta using Pilon.
-  7)  Max-likelihood phylogeny tree-build using RAxML
-  8)  Visualization of clusters using Graphlan
+  7)  MAximum-likelihood-Method Based phylogeny tree-build using RAxML
+  8)  Visualization of clusters using Graphlan and SNPRelate.
 """
 
 from scripts.utils.config_setup import updateConfig

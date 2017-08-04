@@ -41,7 +41,9 @@ def _getRoaryOut(config):
   return ["analysis/core_based/roary/roary.done"]
 
 def _getCoreAndAccGenomes(config):
-  return ["analysis/core_based/roary/core_genome.tab", "analysis/core_based/roary/accessory_genome.tab"]
+  return ["analysis/core_based/roary/core_genome.tab",
+          "analysis/core_based/roary/core_genome.fasta", 
+          "analysis/core_based/roary/accessory_genome.tab"]
 
 def _getMapStats(config):
   return ["analysis/{method}/bwa/aln/align_report.png".format(method = method) 
