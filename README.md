@@ -68,7 +68,7 @@ GATK is a dependency for MAMBA. Due to licensing issues, we could not package th
 
 We have placed test data (a subset of Aanensen et. al published data) on Dropbox that can be downloaded using the link:
 
-`http://bit.ly/2twmgsN`
+`https://goo.gl/vsEzCM`
 
 Assuming you have downloaded the files into MAMBA_TEST_DATA folder, follow the instructions below.
 
